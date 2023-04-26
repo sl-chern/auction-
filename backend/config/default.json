@@ -1,0 +1,7 @@
+{
+  "port": 5000,
+  "baseUrl": "http://localhost",
+  "jwtsecret": "UwU",
+  "clientId": "123784048304-9m1f5tlgmu2bhe0oqqbgo6c1avdsg201.apps.googleusercontent.com",
+  "clientSecret": "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"
+}

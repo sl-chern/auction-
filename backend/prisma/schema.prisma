@@ -1,0 +1,239 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Condition {
+  NEW
+  USED
+  OPENBOX
+}
+
+enum ShippingPayment {
+  BUYER
+  SELLER
+}
+
+enum OfferStatus {
+  NEW
+  CONFIRMED
+  REJECTED
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  REJECTED
+  READY_TO_SHIP
+  SHIP
+  SHIPPED
+}
+
+model User {
+  id                        Int                   @id @default(autoincrement())
+  email                     String                @unique
+  phone                     String                @unique @db.VarChar(13)
+  firstName                 String
+  lastName                  String
+  image                     String?
+  password                  String?
+  login                     String
+  role                      Role
+  refreshTokens             RefreshToken[]
+  lots                      Lot[]
+  offers                    Offer[]
+  bets                      Bet[]
+  orders                    Order[]
+}
+
+model RefreshToken {
+  id                        Int                   @id @default(autoincrement())
+  token                     String
+  deviceId                  String
+  user                      User                  @relation(fields: [userId], references: [id])
+  userId                    Int
+}
+
+model Category {
+  id                        Int                   @id @default(autoincrement())
+  name                      String                @unique
+  parentCategory            Int?
+  category                  Category?             @relation("parentCategory", fields: [parentCategory], references: [id])
+  categories                Category[]            @relation("parentCategory")
+  featureList               FeatureList[]
+  lots                      Lot[]
+}
+
+model Feature {
+  id                        Int                   @id @default(autoincrement())
+  name                      String
+  featureList               FeatureList[]
+  featureValue              FeatureValue[]
+}
+
+model FeatureList {
+  categoryId                Int
+  featureId                 Int
+  category                  Category              @relation(fields: [categoryId], references: [id])
+  feature                   Feature               @relation(fields: [featureId], references: [id])
+
+  @@id([categoryId, featureId])
+}
+
+
+
+model Lot {
+  id                        Int                   @id @default(autoincrement())
+  name                      String
+  description               String                @db.Text
+  condition                 Condition
+  startPrice                Decimal               @db.Decimal(12,2)
+  currentPrice              Decimal               @db.Decimal(12,2)
+  betStep                   Int?
+  betHistory                Boolean
+  startDate                 DateTime
+  endDate                   DateTime
+  buyNowPrice               Decimal?              @db.Decimal(12,2)
+  reservePrice              Decimal?              @db.Decimal(12,2)
+  relist                    Boolean
+  allowOffers               Boolean
+  minOfferPrice             Decimal?              @db.Decimal(12,2)
+  autoConfirmOfferPrice     Decimal?              @db.Decimal(12,2)
+  location                  String                @db.Text
+  shippingPayment           ShippingPayment
+  categoryId                Int
+  category                  Category              @relation(fields: [categoryId], references: [id])
+  userId                    Int
+  user                      User                  @relation(fields: [userId], references: [id])
+  featureValue              FeatureValue[]
+  images                    Image[]
+  offers                    Offer[]
+  bets                      Bet[]
+  orders                    Order[]
+  dealTypeList              DealTypeList[]
+  paymentTypeList           PaymentTypeList[]
+  deliveryTypeList          DeliveryTypeList[]
+}
+
+model FeatureValue {
+  lotId                     Int
+  featureId                 Int
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+  feature                   Feature               @relation(fields: [featureId], references: [id])
+
+  @@id([lotId, featureId])
+}
+
+model Image {
+  id                        Int                   @id @default(autoincrement())
+  path                      String
+  lotId                     Int
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+}
+
+model Offer {
+  id                        Int                   @id @default(autoincrement())
+  price                     Decimal               @db.Decimal(12,2)
+  date                      DateTime
+  status                    OfferStatus
+  userId                    Int
+  user                      User                  @relation(fields: [userId], references: [id])
+  lotId                     Int
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+}
+
+model Bet {
+  id                        Int                   @id @default(autoincrement())
+  price                     Decimal               @db.Decimal(12,2)
+  date                      DateTime
+  userId                    Int
+  user                      User                  @relation(fields: [userId], references: [id])
+  lotId                     Int
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+}
+
+model DealType {
+  id                        Int                   @id @default(autoincrement())
+  name                      String                @unique
+  orders                    Order[]
+  dealTypeList              DealTypeList[]
+}
+
+model DealTypeList {
+  dealTypeId                Int
+  lotId                     Int
+  dealType                  DealType              @relation(fields: [dealTypeId], references: [id])
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+
+  @@id([dealTypeId, lotId])
+}
+
+model PaymentType {
+  id                        Int                   @id @default(autoincrement())
+  name                      String                @unique
+  orders                    Order[]
+  paymentTypeList           PaymentTypeList[]
+}
+
+model PaymentTypeList {
+  paymentTypeId             Int
+  lotId                     Int
+  paymentType               PaymentType           @relation(fields: [paymentTypeId], references: [id])
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+
+  @@id([paymentTypeId, lotId])
+}
+
+model DeliveryType {
+  id                        Int                   @id @default(autoincrement())
+  name                      String                @unique
+  deliveryTypeList          DeliveryTypeList[]
+  deliveries                Delivery[]
+}
+
+model DeliveryTypeList {
+  deliveryTypeId            Int
+  lotId                     Int
+  deliveryType              DeliveryType          @relation(fields: [deliveryTypeId], references: [id])
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+
+  @@id([deliveryTypeId, lotId])
+}
+
+model Delivery {
+  id                        Int                   @id @default(autoincrement())
+  price                     Decimal               @db.Decimal(12,2)
+  city                      String
+  address                   String                @db.Text
+  deliveryTypeId            Int
+  deliveryType              DeliveryType          @relation(fields: [deliveryTypeId], references: [id])
+  orders                    Order[]
+}
+
+model Order {
+  id                        Int                   @id @default(autoincrement())
+  price                     Decimal               @db.Decimal(12,2)
+  phone                     String                @unique @db.VarChar(13)
+  firstName                 String
+  lastName                  String
+  orderStatus               OrderStatus
+  userId                    Int
+  user                      User                  @relation(fields: [userId], references: [id])
+  lotId                     Int
+  lot                       Lot                   @relation(fields: [lotId], references: [id])
+  dealTypeId                Int
+  dealType                  DealType              @relation(fields: [dealTypeId], references: [id])
+  paymentTypeId             Int
+  paymentType               PaymentType           @relation(fields: [paymentTypeId], references: [id])
+  deliveryId                Int
+  delivery                  Delivery              @relation(fields: [deliveryId], references: [id])
+}
