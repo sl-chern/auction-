@@ -41,13 +41,13 @@ enum OrderStatus {
 model User {
   id                        Int                   @id @default(autoincrement())
   email                     String                @unique
-  phone                     String                @unique @db.VarChar(13)
+  phone                     String?               @unique @db.VarChar(13)
   firstName                 String
   lastName                  String
   image                     String?
   password                  String?
-  login                     String
-  role                      Role
+  login                     String?
+  role                      Role                  @default(USER)
   refreshTokens             RefreshToken[]
   lots                      Lot[]
   offers                    Offer[]
@@ -59,6 +59,7 @@ model RefreshToken {
   id                        Int                   @id @default(autoincrement())
   token                     String
   deviceId                  String
+  endDate                   DateTime
   user                      User                  @relation(fields: [userId], references: [id])
   userId                    Int
 }

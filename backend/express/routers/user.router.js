@@ -3,6 +3,7 @@ import {expressjwt as jwt} from "express-jwt"
 import config from "config"
 import multer from "multer"
 import { v4 as uuid } from "uuid"
+import { authenticate, refresh, logout, getUser } from "../controllers/user.controller"
 
 const storage = multer.diskStorage(
   {
@@ -17,11 +18,11 @@ const upload = multer({storage: storage})
 
 const router = Router()
 
-router.post("/authenticate")
-router.post("/logout", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}))
-router.post("/refresh")
+router.post("/authenticate", authenticate)
+router.post("/logout", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), logout)
+router.post("/refresh", refresh)
 router.route("/:id")
-  .get()
+  .get(getUser)
   .patch(jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), upload.single("image"))
   .delete(jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}))
 

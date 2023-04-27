@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `user` MODIFY `phone` VARCHAR(13) NULL,
+    MODIFY `login` VARCHAR(191) NULL,
+    MODIFY `role` ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER';
