@@ -1,0 +1,15 @@
+@tailwind components;
+
+@layer components {
+    footer {
+        @apply h-[50px] bg-light-300 dark:bg-dark-300 w-full mt-4
+    }
+
+    .footer-content {
+        @apply max-w-7xl mx-auto flex flex-row items-center h-[100%]
+    }
+
+    .footer-text {
+        @apply font-openSans text-dark-200 dark:text-light-200
+    }
+}

@@ -3,7 +3,7 @@ import {expressjwt as jwt} from "express-jwt"
 import config from "config"
 import multer from "multer"
 import { v4 as uuid } from "uuid"
-import { authenticate, refresh, logout, getUser } from "../controllers/user.controller"
+import { authenticate, refresh, logout, getUser } from "../controllers/user.controller.js"
 
 const storage = multer.diskStorage(
   {

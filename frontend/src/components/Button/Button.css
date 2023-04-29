@@ -1,0 +1,51 @@
+@tailwind components;
+
+@layer components {
+    .button {
+        @apply h-10 px-3 flex items-center rounded border-2 border-solid border-dark-300 dark:border-light-300 mx-[2px]
+        hover:bg-dark-100 hover:dark:bg-light-100 hover:cursor-pointer transition-colors ease-linear select-none w-min
+    }
+
+    .button-outline {
+        @apply h-10 px-3 flex items-center rounded border-2 border-solid mx-[2px] 
+        border-dark-300 !bg-dark-300 hover:bg-dark-100
+        dark:border-light-300 dark:!bg-light-300 dark:hover:bg-light-100
+        hover:cursor-pointer transition-colors ease-linear select-none
+    }
+
+    .text {
+        @apply font-oswald font-normal text-xl text-dark-200 dark:text-light-200 
+        group-hover:text-light-200 dark:group-hover:text-dark-200
+    }
+
+    .text-outline {
+        @apply font-oswald font-normal text-xl text-light-200 dark:text-dark-200
+    }
+
+    .loaderBlock {
+        @apply h-10 w-[110px] flex justify-center
+    }
+
+    .lds-dual-ring {
+        @apply w-10 h-10 inline-block
+    }
+
+    .lds-dual-ring:after {
+        @apply w-6 h-6 rounded-[50%] m-2 block border-[6px] border-solid 
+        border-x-dark-300 dark:border-x-light-300 border-y-transparent
+    }
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+}

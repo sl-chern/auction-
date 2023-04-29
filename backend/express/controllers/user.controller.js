@@ -37,23 +37,27 @@ export const authenticate = async (req, res, next) => {
     let endDate = new Date()
     endDate = new Date(endDate.setMonth(endDate.getMonth() + 1))
 
-    const refreshToken = await prisma.refreshToken.upsert({
+    let refreshToken = await prisma.refreshToken.updateMany({
       where: {
         userId: user.id,
         deviceId: deviceId
       },
-      update: {
+      data: {
         endDate: endDate,
         token: newRefreshToken
-      },
-      create: {
-        userId: user.id,
-        endDate: endDate,
-        token: newRefreshToken,
-        deviceId: deviceId
       }
-    })
-    
+    })[0]
+
+    if(refreshToken === undefined)
+      refreshToken = await prisma.refreshToken.create({
+        data: {
+          user: { connect: {id: 1}},
+          endDate: endDate,
+          token: newRefreshToken,
+          deviceId: deviceId
+        },
+      })
+
     const accessToken = jwt.sign(
       {
         name: user.firstName,
@@ -67,9 +71,9 @@ export const authenticate = async (req, res, next) => {
     )
 
     const userInfo = {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      user_info: {
+      accessToken: accessToken,
+      refreshToken: refreshToken.token,
+      userInfo: {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -94,7 +98,7 @@ export const logout = async (req, res) => {
     const { id } = req.auth
     const { deviceId } = req.body
 
-    prisma.refreshToken.delete({
+    await prisma.refreshToken.deleteMany({
       where: {
         userId: id,
         deviceId: deviceId
@@ -115,7 +119,7 @@ export const refresh = async (req, res) => {
     const token = uuid()
     const endDate = new Date(new Date().setMonth(new Date().getMonth() + 1))
 
-    const newRefreshToken = await prisma.refreshToken.update({
+    const newRefreshToken = await prisma.refreshToken.updateMany({
       where: {
         deviceId: deviceId,
         refreshToken: refreshToken,
