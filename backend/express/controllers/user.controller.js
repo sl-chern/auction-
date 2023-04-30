@@ -202,7 +202,28 @@ export const getUser = async (req, res) => {
     res.status(200).json(user)
   }
   catch(error) {
-      console.log(error)
-      res.status(500).json({})
+    console.log(error)
+    res.status(500).json({})
+  }
+}
+
+export const patchUser = async (req, res) => {
+  try {
+    const { id } = req.auth
+
+    await prisma.user.update({
+      where: {
+        id: id
+      },
+      data: {
+        ...req.body
+      }
+    })
+
+    res.status(200).json({ message: "Інформація оновлена"})
+  }
+  catch(err) {
+    console.log(error)
+    res.status(500).json({})
   }
 }

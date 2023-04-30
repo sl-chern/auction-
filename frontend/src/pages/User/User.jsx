@@ -24,7 +24,9 @@ export default function User() {
   const userId = useSelector(selectUserId)
 
   const [isEdit, setIsEdit] = useState(false)
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0)
+
+  const [updateUser, { data, isLoading: updateLoading }] = userApi.useUpdateUserMutation()
   
   const schema = yup.object().shape({
     firstName: yup.string("Ім'я повинно бути строкою").min(2, "Ім'я повинно бути довше 2 букв").matches(/^[a-zA-Zа-яА-ЯіІїЇєЄ]+$/, "Ім'я містить некоректні символи"),
@@ -36,7 +38,7 @@ export default function User() {
     image: yup.object().test("is-file", "Картинка має бути файлом", value => value instanceof File).notRequired()
   })
 
-  const { register, control, handleSubmit, reset, setValue } = useForm({
+  const { register, control, handleSubmit, reset, setValue, getValues } = useForm({
     resolver: yupResolver(schema),
     mode: "onTouched"
   })
@@ -68,8 +70,9 @@ export default function User() {
     setValues()
   }
 
-  const handleUpdate = (data) => {
-    console.log("sex", data)
+  const handleUpdate = () => {
+    updateUser({id: user.id, body: getValues()})
+    setIsEdit(!isEdit)
   }
 
   const { errors } = useFormState({control})
@@ -110,7 +113,7 @@ export default function User() {
                   ? isEdit 
                     ? <div className='flex flex-row gap-2'>
                         <Button type="button" onClick={() => handleCancel()}>Відмінити</Button>
-                        <Button outline={true} onClick={handleSubmit(handleUpdate)}>Змінити</Button>
+                        <Button outline={true} onClick={handleUpdate}>Змінити</Button>
                       </div>
                     : <Button type="button" onClick={() => onClick()}>Редагувати</Button>
                   : null
@@ -142,7 +145,7 @@ export default function User() {
                         label="Про себе"
                         helperText={errors.login?.about}
                       />
-                    : <p className='default-text user-page__about-text'>{user?.about.replace('\\n','\n\n')}</p>
+                    : <p className='default-text user-page__about-text'>{user?.about.replace('\\n','\n')}</p>
                 }
                 <div className='user-page__contact-info'>
                   <div className='flex flex-col'>

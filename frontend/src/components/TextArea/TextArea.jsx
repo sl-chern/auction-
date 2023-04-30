@@ -11,7 +11,7 @@ export default function TextArea({label, value, onChange, onBlur, errorText = nu
             autoComplete="off" 
             className="form-group__form-input textarea__input"
             placeholder=" "
-            value={value}
+            value={value.replace('\\n', '\n')}
             onBlur={e => onBlur(e)}
             onChange={e => onChange(e)}
           />
