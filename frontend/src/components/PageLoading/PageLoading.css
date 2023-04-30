@@ -1,0 +1,7 @@
+@tailwind components;
+
+@layer components {
+    .spinner-block {
+        @apply w-full flex justify-center items-center
+    }
+}

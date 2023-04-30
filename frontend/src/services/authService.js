@@ -6,13 +6,13 @@ import { changeUser, changeUserId } from '../store/slices/userSlice'
 import useLogout from '../hooks/useLogout'
 import axios from 'axios'
 
-const useUserApi = () => {
+const useAuthService = () => {
   const dispatch = useDispatch()
   const deviceId = useSelector(selectDeviceId)
   const axiosInstance = useAxios()
   const logout = useLogout()
 
-  const userApi = {
+  const authService = {
     authenticate: async (token) => {
       try {
         const url = "http://localhost:5000/api/user/authenticate"
@@ -57,13 +57,25 @@ const useUserApi = () => {
       catch(err) {
         console.log(err)
       }
+    },
+
+    getUser: async (id) => {
+      const url = `http://localhost:5000/api/user/${id}`
+
+      const res = await axiosInstance.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+
+      return res.data
     }
   }
 
-  return userApi
+  return authService
 }
 
-export default useUserApi
+export default useAuthService
 
 export const useRefresh = () => {
   const deviceId = useSelector(selectDeviceId)

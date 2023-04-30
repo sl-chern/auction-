@@ -2,16 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+@layer components {
   :root { 
     
   }
 
   .default-text {
-    @apply font-roboto text-dark-200 dark:text-light-300
+    @apply text-dark-200 dark:text-light-300
   }
 
   .default-icon {
     @apply text-dark-200 dark:text-light-300
+  }
+
+  body::-webkit-scrollbar {
+    @apply w-[10px]
+  }
+
+  body::-webkit-scrollbar-track {
+      @apply bg-light-300
+  }
+
+  body::-webkit-scrollbar-thumb {
+      @apply rounded-[100vh] bg-dark-200
+  }
+
+  body::-webkit-scrollbar-thumb:hover {
+      @apply bg-dark-400
+  }
+
+  .dark::-webkit-scrollbar-thumb {
+      @apply bg-light-300
+  }
+
+  .dark::-webkit-scrollbar-track {
+      @apply bg-dark-200
+  }
+
+  .dark::-webkit-scrollbar-thumb:hover {
+      @apply bg-light-400
+  }
+
+  .MuiMenu-root .MuiPaper-root {
+      @apply bg-dark-100
+  }
+
+  *::-webkit-scrollbar {
+      @apply w-[10px]
+  }
+
+  *::-webkit-scrollbar-track {
+      @apply bg-light-300
+  }
+
+  *::-webkit-scrollbar-thumb {
+      @apply rounded-[100vh] bg-dark-100
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+      @apply bg-dark-400
+  }
+
+  *::-webkit-scrollbar-thumb {
+      @apply bg-light-300
+  }
+
+  *::-webkit-scrollbar-track {
+      @apply bg-dark-100
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+      @apply bg-light-400
   }
 }

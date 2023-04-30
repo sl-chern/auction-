@@ -1,14 +1,10 @@
 import axios from "axios"
-import { useDispatch } from "react-redux"
-import { useRefresh } from "../api/userApi"
-import { changeAccessToken, changeRefreshToken } from "../store/slices/authenticationSlice"
-import { changeUser, changeUserId } from "../store/slices/userSlice"
+import { useRefresh } from "../services/authService"
 import { useSelector } from "react-redux"
 import { selectAccessToken, selectRefreshToken } from "../store/slices/authenticationSlice"
 import useLogout from "./useLogout"
 
 const useAxios = () => {
-  const dispatch = useDispatch()
   const refresh = useRefresh()
   const logout = useLogout()
 

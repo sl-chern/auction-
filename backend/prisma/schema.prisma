@@ -47,6 +47,7 @@ model User {
   image                     String?
   password                  String?
   login                     String?
+  about                     String?               @db.Text
   role                      Role                  @default(USER)
   refreshTokens             RefreshToken[]
   lots                      Lot[]
@@ -128,6 +129,7 @@ model Lot {
 model FeatureValue {
   lotId                     Int
   featureId                 Int
+  value                     String                @db.Text
   lot                       Lot                   @relation(fields: [lotId], references: [id])
   feature                   Feature               @relation(fields: [featureId], references: [id])
 

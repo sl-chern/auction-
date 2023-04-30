@@ -2,16 +2,16 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../store/slices/userSlice'
 import userPlaceholderPicture from '../../assets/user-placeholder.png'
-import useUserApi from '../../api/userApi'
+import useAuthService from '../../services/authService'
 
 export default function UserPopup({visibility, optionsRef, setVisibility}) {
 
-  const userApi = useUserApi()
+  const authService = useAuthService()
 
   const userInfro = useSelector(selectUser)
 
   const logout = () => {
-    userApi.logout()
+    authService.logout()
     setVisibility(false)
   }
 

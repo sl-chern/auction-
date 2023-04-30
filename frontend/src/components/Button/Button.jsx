@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Button.css'
 
-export default function Button({outline, onClick, children, loading}) {
+export default function Button({outline, onClick, children, loading, type="submit"}) {
   const [butStyle, setButStyle] = useState()
   const [textStyle, setTextStyle] = useState()
 
@@ -18,7 +18,7 @@ export default function Button({outline, onClick, children, loading}) {
 
   if(!loading)
     return (
-      <button type="submit" className={butStyle} onClick={onClick}>
+      <button type={type} className={butStyle} onClick={onClick}>
         <p className={textStyle}>
           {children}
         </p>

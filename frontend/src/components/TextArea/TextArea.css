@@ -1,0 +1,35 @@
+@tailwind components;
+
+@layer components {
+    .textarea__input {
+        @apply resize-none w-full min-h-[250px] text-base h-max
+    }
+
+    .textarea__input::-webkit-scrollbar {
+        @apply w-[3px]
+    }
+    
+    .textarea__input::-webkit-scrollbar-track {
+        @apply bg-light-300 dark:bg-dark-200
+    }
+    
+    .textarea__input::-webkit-scrollbar-thumb {
+        @apply rounded-[100vh] bg-dark-200 dark:bg-light-300
+    }
+    
+    .textarea__input::-webkit-scrollbar-thumb:hover {
+        @apply bg-dark-400 dark:bg-light-400
+    }
+
+    .textarea {
+        @apply w-full flex flex-col mt-4
+    }
+
+    .textarea__count-info {
+        @apply w-full mt-1 flex flex-row items-center justify-between
+    }
+    
+    .textarea__count-text {
+        @apply text-dark-200 dark:text-light-300 text-base font-roboto
+    }
+}

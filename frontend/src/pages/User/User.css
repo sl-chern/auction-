@@ -1,0 +1,71 @@
+@tailwind utilities;
+
+@layer utilities {
+    .user-page {
+        @apply w-full flex flex-col mt-4
+    }
+
+    .user-page__information-block {
+        @apply w-full flex flex-row h-40
+    }
+
+    .user-page__photo {
+        @apply overflow-hidden rounded-sm
+    }
+
+    .user-page__photo img {
+        @apply h-full 
+    }
+
+    .user-page__user-data {
+        @apply flex flex-col ml-8 mt-4 flex-grow
+    }
+
+    .user-page__user-full-name {
+        @apply font-openSans text-4xl
+    }
+
+    .user-page__stats {
+        @apply flex flex-row mt-4 justify-between
+    }
+
+    .user-page__tabs {
+        @apply mt-4
+    }
+
+    .user-page__tab {
+        @apply font-openSans font-semibold text-2xl hover:cursor-pointer
+    }
+
+    .user-page__tab:hover:not(.user-page__tab_selected) {
+        @apply text-dark-400 dark:text-light-500
+    }
+
+    .user-page__tab:hover:not(.user-page__tab_selected) > div {
+        @apply w-full h-[2px] bg-dark-400 dark:bg-light-400 rounded-[1px]
+    }
+
+    .user-page__tab_selected > div {
+        @apply w-full h-[2px] bg-dark-200 dark:bg-light-300 rounded-[1px]
+    }
+
+    .user-page__tab-panel {
+        @apply mt-1 w-full
+    }
+
+    .user-page__about {
+        @apply mt-4 flex flex-col w-full
+    }
+
+    .user-page__about-header {
+        @apply text-4xl font-roboto
+    }
+
+    .user-page__about-text {
+        @apply mt-3 font-roboto text-base w-full whitespace-pre-wrap
+    }
+
+    .user-page__contact-info {
+        @apply mt-3 flex flex-col gap-3
+    }
+}

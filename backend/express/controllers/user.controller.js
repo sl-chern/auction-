@@ -5,7 +5,9 @@ import axios from "axios"
 import jwtDecode from "jwt-decode"
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient({log: ["query"]})
+const prisma = new PrismaClient({
+  log: ["query"]
+})
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -122,28 +124,30 @@ export const refresh = async (req, res) => {
     const newRefreshToken = await prisma.refreshToken.updateMany({
       where: {
         deviceId: deviceId,
-        refreshToken: refreshToken,
+        token: refreshToken,
         endDate: {
-          lte: new Date()
+          gte: new Date()
         }
       },
       data: {
-        refreshToken: token,
+        token: token,
         endDate: endDate
       }
     })
+    
+    if(newRefreshToken === null)
+      return res.status(401).json({})
+
+    console.log(newRefreshToken.id);
 
     await prisma.refreshToken.deleteMany({
       where: {
         deviceId: deviceId,
         id: {
-          notIn: [newRefreshToken?.id || null],
+          notIn: [newRefreshToken.id],
         }
       }
     })
-
-    if(newRefreshToken === null)
-      return res.status(401).json({})
     
     const user = await prisma.user.findFirst({
       where: {
@@ -164,8 +168,8 @@ export const refresh = async (req, res) => {
     )
 
     res.status(200).json({
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     })
   }
   catch(error) {
@@ -178,17 +182,18 @@ export const getUser = async (req, res) => {
   try {
     let user = await prisma.user.findFirst({
       where: {
-        id: req.params.id,
+        id: +req.params.id,
       },
       select: {
-        id,
-        image,
-        firstName,
-        lastName,
-        phone,
-        email,
-        login,
-        role
+        id: true,
+        image: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        email: true,
+        login: true,
+        role: true,
+        about: true
       }
     })
 

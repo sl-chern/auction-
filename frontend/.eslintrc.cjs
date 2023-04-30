@@ -12,6 +12,7 @@ module.exports = {
   rules: {
     'no-unused-vars': 'warn',
     'react-refresh/only-export-components': 'warn',
-    'react/prop-types': 'off'
+    'react/prop-types': 'off',
+    'no-extra-boolean-cast': 'off'
   },
 }

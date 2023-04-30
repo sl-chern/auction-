@@ -6,7 +6,7 @@ import './Header.css'
 import Button from '../Button/Button'
 import { useGoogleLogin } from '@react-oauth/google'
 import { useSelector } from 'react-redux'
-import useUserApi from '../../api/userApi'
+import useAuthService from '../../services/authService'
 import { selectUserId } from '../../store/slices/userSlice'
 import { AiOutlineBell, AiOutlineUser } from 'react-icons/ai'
 import UserPopup from './UserPopup'
@@ -22,7 +22,7 @@ export default function Header() {
 
   const { loading, errors } = useSelector(state => state.authenticationSlice)
 
-  const userApi = useUserApi()
+  const authService = useAuthService()
 
   useEffect(() => {
     if(typeof mode == 'undefined') {
@@ -44,7 +44,7 @@ export default function Header() {
   }
 
   const signIn = useGoogleLogin({
-    onSuccess: async credentialResponse => userApi.authenticate(credentialResponse.access_token)
+    onSuccess: async credentialResponse => authService.authenticate(credentialResponse.access_token)
   })
 
   const optionsRef = useRef()

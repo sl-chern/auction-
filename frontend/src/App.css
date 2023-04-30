@@ -1,0 +1,7 @@
+@tailwind components;
+
+@layer components {
+    main {
+        @apply max-w-7xl grow mx-auto w-screen flex relative
+    }
+}

@@ -9,6 +9,7 @@ import Footer from './components/Footer/Footer'
 import jwtDecode from 'jwt-decode'
 import { changeUserId } from './store/slices/userSlice'
 import { v4 as uuid } from 'uuid'
+import User from './pages/User/User'
 
 function App() {
   const dispatch = useDispatch()
@@ -20,7 +21,6 @@ function App() {
   const deviceId = useSelector(selectDeviceId)
 
   useEffect(() => {
-    console.log("App", deviceId);
     if(deviceId === null) {
       dispatch(changeDeviceId(uuid()))
     }
@@ -52,6 +52,7 @@ function App() {
         <main>
           <Routes>
             <Route exact path='/' element={<></>}/>
+            <Route exact path='/user/:id' element={<User />}/>
           </Routes>
         </main>
       </div>
