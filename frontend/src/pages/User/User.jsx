@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './User.css'
 import { useParams } from 'react-router-dom'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
@@ -16,6 +16,7 @@ import { HiUser } from 'react-icons/hi'
 import { MdEmail } from 'react-icons/md'
 import { AiFillPhone } from 'react-icons/ai'
 import FormTextArea from '../../components/FormTextArea/FormTextArea'
+import { GoPencil } from 'react-icons/go'
 
 export default function User() {
   const { id } = useParams()
@@ -27,6 +28,8 @@ export default function User() {
   const [tabIndex, setTabIndex] = useState(0)
 
   const [updateUser, { data, isLoading: updateLoading }] = userApi.useUpdateUserMutation()
+
+  const [image, setImage] = useState()
   
   const schema = yup.object().shape({
     firstName: yup.string("Ім'я повинно бути строкою").min(2, "Ім'я повинно бути довше 2 букв").matches(/^[a-zA-Zа-яА-ЯіІїЇєЄ]+$/, "Ім'я містить некоректні символи"),
@@ -50,6 +53,7 @@ export default function User() {
     setValue("email", user.email)
     setValue("phone", user.phone)
     setValue("login", user.login)
+    setImage(null)
   }
 
   useEffect(() => {
@@ -71,7 +75,19 @@ export default function User() {
   }
 
   const handleUpdate = () => {
-    updateUser({id: user.id, body: getValues()})
+    let body = new FormData()
+
+    const data = getValues()
+
+    body.append('firstName', data.firstName)
+    body.append('lastName', data.lastName)
+    body.append('phone', data.phone)
+    body.append('email', data.email)
+    body.append('login', data.login)
+    body.append('about', data.about)
+    body.append('image', image)
+    
+    updateUser({id: user.id, body})
     setIsEdit(!isEdit)
   }
 
@@ -81,11 +97,25 @@ export default function User() {
     <PageLoading loading={isLoading}>
       <section className='user-page'>
         <div className='user-page__information-block'>
-          <div className='user-page__photo'>
-            <img 
-              src={user?.image || userPlaceholderPicture}
-              alt=""
-            />
+          <div className='relative h-full'>
+            <div className='user-page__photo'>
+              <img 
+                src={image ? URL.createObjectURL(image) : user?.image || userPlaceholderPicture}
+                alt=""
+              />
+            </div>
+            {isEdit 
+              ? <div 
+                  className='absolute rounded-full top-0 right-0 z-10 bg-dark-200 dark:bg-light-300 p-[6px] translate-x-[20%] translate-y-[-20%] hover:cursor-pointer border-[1px] border-solid border-light-300 dark:border-dark-200'
+                  onClick={() => document.querySelector('[name=image]').click()}
+                >
+                  <GoPencil className='text-light-300 dark:text-dark-200' size={16}/>
+                </div>
+              : null
+            }
+            <input type="file" hidden {...register("image", {
+              onChange: e => setImage(e.nativeEvent.target.files[0])
+            })}/>
           </div>
           <div className='user-page__user-data'>
             {

@@ -4,6 +4,12 @@ import { v4 as uuid } from "uuid"
 import axios from "axios"
 import jwtDecode from "jwt-decode"
 import { PrismaClient } from '@prisma/client'
+import fs from 'fs'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const prisma = new PrismaClient({
   log: ["query"]
@@ -211,19 +217,36 @@ export const patchUser = async (req, res) => {
   try {
     const { id } = req.auth
 
+    const user = await prisma.user.findFirst({
+      where: {
+        id: id
+      },
+      select: {
+        image: true
+      }
+    })
+
+    if(req.file?.path)
+      fs.rm(`${__dirname}/../../images/${user.image}`, (err) => {
+        if(err)
+          console.error(err.message)
+        return
+    })
+
     await prisma.user.update({
       where: {
         id: id
       },
       data: {
-        ...req.body
+        ...req.body,
+        image: req.file?.path.replace("images\\", "")
       }
     })
 
     res.status(200).json({ message: "Інформація оновлена"})
   }
   catch(err) {
-    console.log(error)
+    console.log(err)
     res.status(500).json({})
   }
 }

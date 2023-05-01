@@ -10,11 +10,11 @@
     }
 
     .user-page__photo {
-        @apply overflow-hidden rounded-sm
+        @apply overflow-hidden rounded-sm h-full
     }
 
     .user-page__photo img {
-        @apply h-full 
+        @apply h-full
     }
 
     .user-page__user-data {
