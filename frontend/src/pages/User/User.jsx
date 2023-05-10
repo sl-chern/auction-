@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './User.css'
 import { useParams } from 'react-router-dom'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
@@ -27,7 +27,7 @@ export default function User() {
   const [isEdit, setIsEdit] = useState(false)
   const [tabIndex, setTabIndex] = useState(0)
 
-  const [updateUser, { data, isLoading: updateLoading }] = userApi.useUpdateUserMutation()
+  const [updateUser] = userApi.useUpdateUserMutation()
 
   const [image, setImage] = useState()
   
@@ -41,7 +41,7 @@ export default function User() {
     image: yup.object().test("is-file", "Картинка має бути файлом", value => value instanceof File).notRequired()
   })
 
-  const { register, control, handleSubmit, reset, setValue, getValues } = useForm({
+  const { register, control, setValue, getValues } = useForm({
     resolver: yupResolver(schema),
     mode: "onTouched"
   })
@@ -57,7 +57,6 @@ export default function User() {
   }
 
   useEffect(() => {
-    console.log(user)
     if(user?.id) {
       setValues()
     }

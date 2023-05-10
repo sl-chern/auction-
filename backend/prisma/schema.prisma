@@ -91,15 +91,13 @@ model FeatureList {
   @@id([categoryId, featureId])
 }
 
-
-
 model Lot {
   id                        Int                   @id @default(autoincrement())
   name                      String
   description               String                @db.Text
   condition                 Condition
   startPrice                Decimal               @db.Decimal(12,2)
-  currentPrice              Decimal               @db.Decimal(12,2)
+  currentPrice              Decimal?              @db.Decimal(12,2)
   betStep                   Int?
   betHistory                Boolean
   startDate                 DateTime

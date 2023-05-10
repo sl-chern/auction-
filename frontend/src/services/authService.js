@@ -106,6 +106,7 @@ export const useRefresh = () => {
         logout()
       }
       console.log(err)
+      return Promise.reject(err)
     }
   }
 

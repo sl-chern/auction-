@@ -5,18 +5,20 @@ import authenticationSlice from './slices/authenticationSlice'
 import themeSlice from './slices/themeSlice'
 import userSlice from './slices/userSlice'
 import { userApi } from '../services/userService'
+import { lotApi } from '../services/lotService'
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['userAPI']
+  blacklist: ['userAPI', 'lotAPI', 'betAPI']
 }
 
 const rootReducer = combineReducers({
   authenticationSlice,
   themeSlice,
   userSlice,
-  [userApi.reducerPath]: userApi.reducer
+  [userApi.reducerPath]: userApi.reducer,
+  [lotApi.reducerPath]: lotApi.reducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -29,7 +31,8 @@ const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
       }
     })
-      .concat(userApi.middleware),
+      .concat(userApi.middleware)
+      .concat(lotApi.middleware),
   devTools: import.meta.env.NODE_ENV !== 'production',
 })
 

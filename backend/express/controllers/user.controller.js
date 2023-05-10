@@ -215,11 +215,11 @@ export const getUser = async (req, res) => {
 
 export const patchUser = async (req, res) => {
   try {
-    const { id } = req.auth
+    const { id } = req.params
 
     const user = await prisma.user.findFirst({
       where: {
-        id: id
+        id: +id
       },
       select: {
         image: true
@@ -235,7 +235,7 @@ export const patchUser = async (req, res) => {
 
     await prisma.user.update({
       where: {
-        id: id
+        id: +id
       },
       data: {
         ...req.body,

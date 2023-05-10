@@ -1,6 +1,15 @@
 import app from './express/app.js'
 import config from "config"
 import { PrismaClient } from '@prisma/client'
+import { Server } from 'socket.io'
+import http from 'http'
+import onConnection from './express/sockets/onConnection.js'
+
+const server = http.createServer(app)
+
+const io = new Server(server, {
+	cors: "http://localhost:5173/"
+})
 
 const prisma = new PrismaClient()
 
@@ -21,7 +30,9 @@ async function assertDatabaseConnectionOk() {
 const init = async () => {
 	await assertDatabaseConnectionOk()
 
-	app.listen(PORT, async () => {
+	io.on("connection", socket => onConnection(io, socket))
+
+	server.listen(PORT, async () => {
 		console.log(`Express server started on port ${PORT}`)
 	})
 }
