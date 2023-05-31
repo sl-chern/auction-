@@ -3,7 +3,7 @@ import {expressjwt as jwt} from "express-jwt"
 import config from "config"
 import multer from "multer"
 import { v4 as uuid } from "uuid"
-import { getBets, getLot, getOffers } from "../controllers/lot.controller.js"
+import { getBets, getCategories, getSubcategoryFilters, getLot, getOffers, getLotFilters, getLots } from "../controllers/lot.controller.js"
 
 const storage = multer.diskStorage(
   {
@@ -17,6 +17,12 @@ const storage = multer.diskStorage(
 const upload = multer({storage: storage})
 
 const router = Router()
+
+router.post("/categories", getCategories)
+router.get("/categories/:id/filters", getSubcategoryFilters)
+router.get("/filters", getLotFilters)
+
+router.post('/lots', getLots)
 
 router.route("/:id")
   .get(getLot)

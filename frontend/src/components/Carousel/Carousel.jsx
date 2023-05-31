@@ -11,29 +11,35 @@ export default function Carousel({images = [], height}) {
   
   return (
     <div style={{height: height}} className='flex flex-row gap-2'>
-      <div className='flex flex-col gap-2'>
-        {
-          images.map((item, ind) => 
-            <div key={`carouselBut${ind}`} onClick={() => setIndex(ind)} className='relative overflow-hidden group border-[1px] border-solid border-dark-200 dark:border-light-300 rounded w-[100px] hover:cursor-pointer'>
-              <img 
-                src={`${import.meta.env.VITE_SERVER_URL}/../${item}`} 
-                alt={`image button ${ind}`}
-              />
-              <div className='w-full h-full opacity-30 z-10 group-hover:dark:bg-light-300 group-hover:bg-dark-200 absolute top-0 left-0'></div>
-            </div>
-          )
-        }
+      <div className='overflow-y-scroll'>
+        <div className='flex flex-col gap-2 h-max'>
+          {
+            images.map((item, ind) => 
+              <div key={`carouselBut${ind}`} onClick={() => setIndex(ind)} className='relative overflow-hidden group border-[1px] border-solid border-dark-200 dark:border-light-300 rounded w-[100px] hover:cursor-pointer'>
+                <img 
+                  src={`${import.meta.env.VITE_SERVER_URL}/../${item}`} 
+                  alt={`image button ${ind}`}
+                />
+                <div className='w-full h-full opacity-30 z-10 group-hover:dark:bg-light-300 group-hover:bg-dark-200 absolute top-0 left-0'></div>
+              </div>
+            )
+          }
+        </div>
       </div>
       <div className='relative flex flex-row aspect-square overflow-hidden border-[1px] border-solid border-dark-200 dark:border-light-300 rounded'>
         {
           images.map((item, ind) => 
-            <img 
-              key={`carousel${ind}`} 
-              src={`${import.meta.env.VITE_SERVER_URL}/../${item}`} 
-              className='max-w-full max-h-full object-contain transition-transform duration-300 select-none'
+            <div 
+              className='aspect-square h-full flex justify-center items-center transition-transform duration-300 select-none' 
+              key={`carousel${ind}`}
               style={{transform: `translateX(${index * -100}%)`}}
-              alt={`image ${ind}`}
-            />
+            >
+              <img 
+                src={`${import.meta.env.VITE_SERVER_URL}/../${item}`} 
+                className='max-w-full max-h-full object-contain'
+                alt={`image ${ind}`}
+              />
+            </div>
           )
         }
         <div 

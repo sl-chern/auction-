@@ -18,6 +18,7 @@ import getFormatedDate from '../../utils/getFormatedDate'
 import { selectUserId } from '../../store/slices/userSlice'
 import OfferSeller from './OfferSeller'
 import OfferBidder from './OfferBidder'
+import getConvertedValue from '../../utils/getConvertedValue'
 
 export default function Lot() {
   const { id } = useParams()
@@ -299,14 +300,23 @@ export default function Lot() {
             <p className='default-text mt-3 font-oswald text-2xl w-full whitespace-pre-wrap'>Характеристики</p>
             <div className='flex flex-col w-full mt-3 gap-1'>
               {
-                lot?.featureValue.map((item, index) => 
-                  <div key={`featureValue${index}`} className='flex flex-row'>
-                    <div className='flex w-[200px]'>
-                      <p className='default-text font-openSans text-base'>{item.feature.name}</p>
+                lot?.featureValue.map((item, index) => {
+                  let value
+                  
+                  if(!item.feature.isOptions)
+                    value = getConvertedValue(item.value, item.feature.unit)
+                  else
+                    value = item.featureOption.value
+                  
+                  return (
+                    <div key={`featureValue${index}`} className='flex flex-row'>
+                      <div className='flex w-[200px]'>
+                        <p className='default-text font-openSans text-base'>{item.feature.name}</p>
+                      </div>
+                      <p className='default-text font-openSans text-base block'>{value}</p>
                     </div>
-                    <p className='default-text font-openSans text-base block'>{item.value}</p>
-                  </div>
-                )
+                  )
+                })
               }
             </div>
           </TabPanel>

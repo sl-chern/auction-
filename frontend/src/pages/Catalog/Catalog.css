@@ -1,0 +1,15 @@
+@tailwind components;
+
+@layer components {
+  .features-hidden {
+    @apply h-7 overflow-hidden
+  }
+
+  .icon-hidden {
+    @apply rotate-180
+  }
+
+  .filters-wrapper label {
+    @apply dark:bg-dark-200 bg-light-300
+  }
+}

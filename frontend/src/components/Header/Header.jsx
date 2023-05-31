@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {FaSun, FaBlind} from 'react-icons/fa'
-import {BsMoonStarsFill} from 'react-icons/bs'
+import { FaSun, FaBlind } from 'react-icons/fa'
+import { BsMoonStarsFill } from 'react-icons/bs'
 import useDarkMode from '../../hooks/useDarkMode'
 import './Header.css'
 import Button from '../Button/Button'
@@ -9,8 +9,11 @@ import { useSelector } from 'react-redux'
 import useAuthService from '../../services/authService'
 import { selectUserId } from '../../store/slices/userSlice'
 import { AiOutlineBell, AiOutlineUser } from 'react-icons/ai'
+import { TbGavel } from 'react-icons/tb'
+import { GiBangingGavel } from 'react-icons/gi'
 import UserPopup from './UserPopup'
 import useOutsideClickDetector from '../../hooks/useOutsideClickDetector'
+import { Link } from 'react-router-dom'
 
 export default function Header() {
   const [mode, setMode] = useDarkMode()
@@ -57,11 +60,23 @@ export default function Header() {
   return (
     <header>
       <div className="header-content">
-        <a href='/'>
-          <div className="header-content__logo-block">
-            <p className="header-content__name-text">Auction</p>
-          </div>
-        </a>
+        <div className='flex flex-row gap-14'>
+          <a href='/'>
+            <div className="header-content__logo-block">
+              <p className="header-content__name-text">Auction</p>
+            </div>
+          </a>
+          <nav className='flex flex-row items-center gap-6'>
+            <Link to={'/catalog'}>
+              <div className='flex justify-center relative after:w-full after:scale-0 after:bottom-[0px] after:absolute after:h-[2px] after:bg-dark-300 dark:after:bg-light-300 after:transition-transform after:duration-100 hover:after:scale-100'>
+                <p className='default-text text-xl font-openSans font-medium'>Каталог</p>
+              </div>
+            </Link>
+            <div className='hover:cursor-pointer flex justify-center relative after:w-full after:scale-0 after:bottom-[0px] after:absolute after:h-[2px] after:bg-dark-300 dark:after:bg-light-300 after:transition-transform after:duration-100 hover:after:scale-100'>
+              <p className='default-text text-xl font-openSans font-medium'>Випадковий лот</p>
+            </div>
+          </nav>
+        </div>
         
 
         <div className="flex flex-row items-center">
@@ -82,6 +97,11 @@ export default function Header() {
                     Увійти
                   </Button>
                 : <>
+                    <Link to="/wins">
+                      <div ref={buttonRef} className="header-content__user-button">
+                        <TbGavel className='default-icon' size={28}/>
+                      </div>
+                    </Link>
                     <div ref={buttonRef} className="header-content__user-button" onClick={() => visibility ? setVisibility(false) : setVisibility(true) }>
                       <AiOutlineUser className='default-icon' size={28}/>
                     </div>
@@ -89,8 +109,6 @@ export default function Header() {
                   </>
               : null
           }
-          
-
         </div>
       </div>
     </header>

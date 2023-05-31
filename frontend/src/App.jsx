@@ -12,6 +12,7 @@ import { v4 as uuid } from 'uuid'
 import User from './pages/User/User'
 import Lot from './pages/Lot/Lot'
 import Catalog from './pages/Catalog/Catalog'
+import Wins from './pages/Wins/Wins'
 
 function App() {
   const dispatch = useDispatch()
@@ -57,6 +58,8 @@ function App() {
             <Route exact path='/user/:id' element={<User />}/>
             <Route exact path='/lot/:id' element={<Lot />}/>
             <Route exact path='/catalog' element={<Catalog />}/>
+            <Route exact path='/wins' element={<Wins />}/>
+            <Route exact path='*' element={<>404</>}/>
           </Routes>
         </main>
       </div>

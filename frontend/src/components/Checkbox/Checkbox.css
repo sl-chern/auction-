@@ -1,0 +1,28 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .checkboxHidden {
+        @apply appearance-none
+    }
+
+    .checkBoxTitle {
+        @apply font-openSans text-base dark:text-light-300 text-dark-200 font-medium flex items-center relative
+        pl-4
+    }
+
+    .checkBox {
+        @apply w-3 h-3 absolute left-0 border-[1px] border-dark-200 dark:border-light-300 rounded-sm
+        flex items-center justify-center
+    }
+
+    .checkboxHidden:focus + .checkBox {
+        @apply shadow shadow-dark-200 dark:shadow-light-300
+    }
+}
+
+@layer utilities {
+    .checked {
+        @apply bg-dark-200 dark:bg-light-300 text-light-300 dark:text-dark-200
+    }
+}

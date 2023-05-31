@@ -71,24 +71,36 @@ model Category {
   parentCategory            Int?
   category                  Category?             @relation("parentCategory", fields: [parentCategory], references: [id])
   categories                Category[]            @relation("parentCategory")
-  featureList               FeatureList[]
+  features                  Feature[]
   lots                      Lot[]
 }
 
 model Feature {
   id                        Int                   @id @default(autoincrement())
   name                      String
-  featureList               FeatureList[]
+  isOptions                 Boolean
+  unit                      String?
+  categoryId                Int
+  category                  Category              @relation(fields: [categoryId], references: [id])
   featureValue              FeatureValue[]
+  featureOptions            FeatureOption[]
+  featureRanges             FeatureRange[]
 }
 
-model FeatureList {
-  categoryId                Int
+model FeatureOption {
+  id                        Int                   @id @default(autoincrement())
+  value                     String
   featureId                 Int
-  category                  Category              @relation(fields: [categoryId], references: [id])
   feature                   Feature               @relation(fields: [featureId], references: [id])
+  featureValues             FeatureValue[]
+}
 
-  @@id([categoryId, featureId])
+model FeatureRange {
+  id                        Int                   @id @default(autoincrement())
+  min                       Decimal?              @db.Decimal(12,3)
+  max                       Decimal?              @db.Decimal(12,3)
+  featureId                 Int
+  feature                   Feature               @relation(fields: [featureId], references: [id])
 }
 
 model Lot {
@@ -127,10 +139,12 @@ model Lot {
 model FeatureValue {
   lotId                     Int
   featureId                 Int
-  value                     String                @db.Text
+  featureOptionId           Int?
+  value                     Decimal?              @db.Decimal(12,3)
   lot                       Lot                   @relation(fields: [lotId], references: [id])
   feature                   Feature               @relation(fields: [featureId], references: [id])
-
+  featureOption             FeatureOption?        @relation(fields: [featureOptionId], references: [id])
+  
   @@id([lotId, featureId])
 }
 

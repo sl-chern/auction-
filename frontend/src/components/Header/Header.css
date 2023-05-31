@@ -18,7 +18,7 @@
     }
 
     header {
-        @apply sticky h-[70px] bg-light-300 w-full dark:bg-dark-300 z-30
+        @apply sticky h-[70px] bg-light-300 w-full dark:bg-dark-200 z-30
     }
 
     .header-content {
