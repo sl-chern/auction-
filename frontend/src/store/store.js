@@ -6,11 +6,12 @@ import themeSlice from './slices/themeSlice'
 import userSlice from './slices/userSlice'
 import { userApi } from '../services/userService'
 import { lotApi } from '../services/lotService'
+import { orderApi } from '../services/orderService'
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['userAPI', 'lotAPI', 'betAPI']
+  blacklist: ['userAPI', 'lotAPI', 'betAPI', 'orderAPI']
 }
 
 const rootReducer = combineReducers({
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
   themeSlice,
   userSlice,
   [userApi.reducerPath]: userApi.reducer,
-  [lotApi.reducerPath]: lotApi.reducer
+  [lotApi.reducerPath]: lotApi.reducer,
+  [orderApi.reducerPath]: orderApi.reducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -32,7 +34,8 @@ const store = configureStore({
       }
     })
       .concat(userApi.middleware)
-      .concat(lotApi.middleware),
+      .concat(lotApi.middleware)
+      .concat(orderApi.middleware),
   devTools: import.meta.env.NODE_ENV !== 'production',
 })
 

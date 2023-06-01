@@ -10,7 +10,7 @@ import { lotApi } from '../../services/lotService'
 import Checkbox from '../../components/Checkbox/Checkbox'
 import getConvertedValue from '../../utils/getConvertedValue'
 import TextInput from '../../components/TextInput/TextInput'
-import { FaSortAmountDown, FaSortAmountUpAlt } from 'react-icons/fa'
+import { FaSortAmountDown, FaSortAmountUpAlt, FaSortAmountDownAlt } from 'react-icons/fa'
 import { newLotOptions, endingLotOptions, sortOptions, offersOptions, conditionOptions } from '../../data/catalogOptions'
 import Button from '../../components/Button/Button'
 import ShortLot from '../../components/ShortLot/ShortLot'
@@ -461,7 +461,7 @@ export default function Catalog() {
             <div className="h-10 rounded w-10 ml-2 border-[1px] border-solid border-dark-200 dark:border-light-300 flex justify-center items-center hover:cursor-pointer select-none hover:bg-light-400 dark:hover:bg-dark-400" onClick={() => setDesc(!desc)}>
               {desc ? 
                 <FaSortAmountDown size="30px" className="default-icon"/> : 
-                <FaSortAmountUpAlt size="30px" className="default-icon"/>
+                <FaSortAmountDownAlt size="30px" className="default-icon"/>
               }
             </div>
           </div>
