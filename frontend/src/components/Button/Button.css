@@ -2,12 +2,12 @@
 
 @layer components {
     .button {
-        @apply h-10 px-3 flex items-center rounded border-2 border-solid border-dark-300 dark:border-light-300 mx-[2px]
+        @apply h-10 px-3 flex items-center justify-center rounded border-2 border-solid border-dark-300 dark:border-light-300 mx-[2px]
         hover:bg-dark-100 hover:dark:bg-light-100 hover:cursor-pointer transition-colors ease-linear select-none w-min
     }
 
     .button-outline {
-        @apply h-10 px-3 flex items-center rounded border-2 border-solid mx-[2px] 
+        @apply h-10 px-3 flex items-center justify-center rounded border-2 border-solid mx-[2px] 
         border-dark-300 !bg-dark-300 hover:bg-dark-100
         dark:border-light-300 dark:!bg-light-300 dark:hover:bg-light-100
         hover:cursor-pointer transition-colors ease-linear select-none

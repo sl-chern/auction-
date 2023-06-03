@@ -1,9 +1,9 @@
-const useSelectTheme = (darkMode, width = '200px', justifySelf = "auto") => {
+const useSelectTheme = (darkMode, width = '200px', justifySelf = "auto", error = false) => {
   return {
     control: styles => ({ 
       ...styles, 
       backgroundColor: 'transperent',
-      border: darkMode ? '1px solid #ECEAEA !important' : '1px solid #141414 !important',
+      border: error ? '1px solid #DC2626 !important' : darkMode ? '1px solid #ECEAEA !important' : '1px solid #141414 !important',
       boxShadow: 0,
       width: width,
       minHeight: "40px",
@@ -13,7 +13,7 @@ const useSelectTheme = (darkMode, width = '200px', justifySelf = "auto") => {
     }),
     input: styles => ({
       ...styles, 
-      color: darkMode ? '#ECEAEA !important' : '#141414 !important',
+      color: error ? '#DC2626 !important' : darkMode ? '#ECEAEA !important' : '#141414 !important',
       fontFamily: 'Roboto Condensed'
     }),
     singleValue: styles => ({ 
@@ -43,11 +43,11 @@ const useSelectTheme = (darkMode, width = '200px', justifySelf = "auto") => {
     }),
     dropdownIndicator: styles => ({
       ...styles,
-      color: darkMode ? '#ECEAEA !important' : '#141414 !important',
+      color: error ? '#DC2626 !important' : darkMode ? '#ECEAEA !important' : '#141414 !important',
     }),
     indicatorSeparator: styles => ({
       ...styles,
-      backgroundColor: darkMode ? '#ECEAEA !important' : '#141414 !important',
+      backgroundColor: error ? '#DC2626 !important' : darkMode ? '#ECEAEA !important' : '#141414 !important',
     }),
     multiValue: styles => ({
       ...styles,
@@ -80,6 +80,10 @@ const useSelectTheme = (darkMode, width = '200px', justifySelf = "auto") => {
       ...styles,
       zIndex: 1000
     }),
+    placeholder: styles => ({
+      ...styles,
+      color: error ? '#DC2626 !important' : styles.color
+    })
   }
 }
   

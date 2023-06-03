@@ -4,7 +4,7 @@ import baseQuery from './customBaseQuery'
 export const orderApi = createApi({ 
   reducerPath: 'orderAPI',
   baseQuery: baseQuery,
-  tagTypes: ['Wins'],
+  tagTypes: ['Wins', 'LotCheckout'],
   endpoints: (build) => ({
     fetchWins: build.query({
       query: (id) => ({
@@ -12,5 +12,18 @@ export const orderApi = createApi({
       }),
       providesTags: result => ['Wins']
     }),
+    fetchLotCheckoutInfo: build.query({
+      query: (id) => ({
+        url: `/order/lot/${id}`
+      }),
+      providesTags: result => ['LotCheckout']
+    }),
+    createOrder: build.mutation({
+      query: ({id, body}) => ({
+        url: `/order/lot/${id}`,
+        method: 'POST',
+        body: body
+      })
+    })
   }),
 })

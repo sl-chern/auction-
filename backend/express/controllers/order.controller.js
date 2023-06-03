@@ -96,3 +96,180 @@ export const getWins = async (req, res, next) => {
     res.status(500).json({})
   }
 }
+
+export const getLotInfoForCHeckout = async (req, res, next) => {
+  try {
+    const { id: userId } = req.auth
+    const { id: lotId } = req.params
+
+    const lot = await prisma.lot.findFirst({
+      where: {
+        id: +lotId
+      },
+      select: {
+        id: true,
+        name: true,
+        currentPrice: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            image: true
+          }
+        },
+        deliveryTypeList: {
+          select: {
+            deliveryType: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+          }
+        },
+        dealTypeList: {
+          select: {
+            dealType: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+          }
+        },
+        paymentTypeList: {
+          select: {
+            paymentType: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+          }
+        },
+        images: {
+          select: {
+            path: true
+          },
+          take: 1
+        },
+        bets: {
+          select: {
+            id: true,
+            userId: true,
+            price: true
+          },
+          orderBy: {
+            price: 'desc'
+          },
+          take: 1
+        },
+        offers: {
+          select: {
+            id: true,
+            price: true,
+            userId: true
+          },
+          where: {
+            status: 'CONFIRMED'
+          }
+        }
+      }
+    })
+
+    if((!!lot.bets[0] && lot.bets[0]?.userId !== +userId) || (!!lot.offers[0] && lot.offers[0].userId !== +userId)) 
+      return res.status(403).json({message: "Немає доступу"})
+
+    res.status(200).json(lot)
+  }
+  catch(error) {
+    console.log(error)
+    res.status(500).json({})
+  }
+}
+
+export const createOrder = async (req, res, next) => {
+  try {
+    const { id: userId } = req.auth
+    const { id: lotId } = req.params
+    const { city, address, firstName, lastName, phone, dealType, deliveryType, paymentType } = req.body
+
+    const lot = await prisma.lot.findFirst({
+      where: {
+        id: +lotId
+      },
+      select: {
+        id: true,
+        bets: {
+          select: {
+            id: true,
+            userId: true,
+            price: true
+          },
+          orderBy: {
+            price: 'desc'
+          },
+          take: 1
+        }
+      }
+    })
+
+    if(lot.bets[0].userId !== +userId) 
+      return res.status(403).json({message: "Немає доступу"})
+
+    const delivery = await prisma.delivery.create({
+      data: {
+        price: 0,
+        city: city,
+        address: address,
+        deliveryType: {
+          connect: {
+            id: +deliveryType
+          }
+        }
+      }
+    })
+
+    await prisma.order.create({
+      data: {
+        price: lot.bets[0].price + delivery.price,
+        phone: phone,
+        firstName: firstName,
+        lastName: lastName,
+        orderStatus: 'NEW',
+        user: {
+          connect: {
+            id: +userId
+          }
+        },
+        lot: {
+          connect: {
+            id: +lotId
+          }
+        },
+        delivery: {
+          connect: {
+            id: delivery.id
+          }
+        },
+        dealType: {
+          connect: {
+            id: +dealType
+          }
+        },
+        paymentType: {
+          connect: {
+            id: +paymentType
+          }
+        }
+      }
+    })
+
+    res.status(200).json({ message: "Замовлення, було оформлене" })
+  }
+  catch(error) {
+    console.log(error)
+    res.status(500).json({})
+  }
+}

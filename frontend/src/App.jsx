@@ -13,13 +13,17 @@ import User from './pages/User/User'
 import Lot from './pages/Lot/Lot'
 import Catalog from './pages/Catalog/Catalog'
 import Wins from './pages/Wins/Wins'
+import Checkout from './pages/Checkout/Checkout'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import CreateLot from './pages/CreateLot/CreateLot'
 
 function App() {
   const dispatch = useDispatch()
 
   const accessToken = useSelector(selectAccessToken)
   
-  const [_, setMode] = useDarkMode()
+  const [mode, setMode] = useDarkMode()
 
   const deviceId = useSelector(selectDeviceId)
 
@@ -59,8 +63,29 @@ function App() {
             <Route exact path='/lot/:id' element={<Lot />}/>
             <Route exact path='/catalog' element={<Catalog />}/>
             <Route exact path='/wins' element={<Wins />}/>
+            <Route exact path='/wins/:id/delivery' element={<Checkout />}/>
+            <Route exact path='/create' element={<CreateLot />}/>
             <Route exact path='*' element={<>404</>}/>
           </Routes>
+          <ToastContainer 
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            position='top-right'
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme={mode ? 'dark' : 'light'}
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              height: '100%',
+              overflow: 'hidden'
+            }}
+          />
         </main>
       </div>
       <Footer />

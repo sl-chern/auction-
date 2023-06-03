@@ -4,7 +4,25 @@
 
 @layer components {
   :root { 
-    
+    --toastify-color-dark: #0A0A0A;
+    --toastify-color-progress-light: linear-gradient(
+      to right,
+      #4cd964,
+      #5ac8fa,
+      #007aff,
+      #34aadc,
+      #5856d6,
+      #ff2d55
+    );
+    --toastify-color-progress-dark: linear-gradient(
+      to right,
+      #4cd964,
+      #5ac8fa,
+      #007aff,
+      #34aadc,
+      #5856d6,
+      #ff2d55
+    );
   }
 
   .divider {
@@ -17,6 +35,10 @@
 
   .default-text {
     @apply text-dark-200 dark:text-light-300
+  }
+
+  .error-text {
+    @apply !text-red-600
   }
 
   .default-icon {

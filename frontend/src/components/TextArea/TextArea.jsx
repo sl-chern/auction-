@@ -1,7 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './TextArea.css'
 
 export default function TextArea({label, value, onChange, onBlur, errorText = null}) {
+  let className = "form-group__form-input textarea__input"
+
+  if(!!errorText)
+    className += ' form-input_invalid'
+
+  console.log(className)
+
   return (
     <div className="textarea">
       <div className="textarea__input-block">
@@ -9,9 +16,9 @@ export default function TextArea({label, value, onChange, onBlur, errorText = nu
           <textarea 
             maxLength={1500}
             autoComplete="off" 
-            className="form-group__form-input textarea__input"
+            className={className}
             placeholder=" "
-            value={value.replace('\\n', '\n')}
+            value={value?.replace('\\n', '\n')}
             onBlur={e => onBlur(e)}
             onChange={e => onChange(e)}
           />
@@ -20,7 +27,7 @@ export default function TextArea({label, value, onChange, onBlur, errorText = nu
       </div>
       
       <div className="textarea__count-info">
-        <p className="textarea__count-text">{value.length}/2000 символов</p>
+        <p className="textarea__count-text">{value?.length || 0}/2000 символов</p>
       </div>
     </div>
   )

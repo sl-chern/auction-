@@ -23,7 +23,7 @@ export default function WonLot({id, name, price, status, userId, firstName, last
           </div>
         </div>
         <div className='flex w-max mr-0'>
-          <Button outline={true} onClick={() => navigate('/wins/:id/delivery')}>
+          <Button outline={true} onClick={() => navigate(`/wins/${id}/delivery`)}>
             Оформити доставку
           </Button>
         </div>

@@ -1,6 +1,10 @@
 @tailwind components;
 
 @layer components {
+    .checkout-form .textarea__input {
+        @apply min-h-[100px]
+    }
+
     .textarea__input {
         @apply resize-none w-full min-h-[250px] text-base h-max font-roboto
     }
@@ -23,6 +27,10 @@
 
     .textarea {
         @apply w-full flex flex-col mt-4
+    }
+
+    .checkout-form .textarea {
+        @apply mt-0
     }
 
     .textarea__count-info {

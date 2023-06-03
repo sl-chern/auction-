@@ -4,4 +4,8 @@
     main {
         @apply max-w-7xl grow mx-auto w-screen flex relative
     }
+    
+    .Toastify__toast-theme--dark {
+        @apply bg-dark-100
+    }
 }
