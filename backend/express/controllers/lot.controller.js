@@ -104,10 +104,8 @@ export const getLot = async (req, res, next) => {
         }
       }
     })
-
-    const lotWithoutData = exclude(lot, ['buyNowPrice', 'reservePrice', 'relist', 'autoConfirmOfferPrice', 'userId'])
   
-    res.status(200).json(lotWithoutData)
+    res.status(200).json(lot)
   }
   catch(error) {
     console.log(error)
@@ -315,9 +313,15 @@ export const getLots = async (req, res, next) => {
       limit
     } = req.body
 
-    const conditions = [
-      { currentPrice: { gte: minPrice || -1, lte: maxPrice || 999999999999 } }
-    ]
+    const conditions = []
+
+    if(!!minPrice) {
+      conditions.push({ currentPrice: { gte: minPrice }})
+    }
+
+    if(!!maxPrice) {
+      conditions.push({ currentPrice: { lte: maxPrice }})
+    }
 
     if(!!subcategory) {
       conditions.push({ categoryId: +subcategory?.value })
@@ -341,7 +345,6 @@ export const getLots = async (req, res, next) => {
     }
 
     if(!!endingIn) {
-      console.log(endingIn)
       const filterDate = new Date(new Date().setSeconds(new Date().getSeconds() + endingIn.value))
       conditions.push({ endDate: { lte: filterDate }})
     }
@@ -428,6 +431,7 @@ export const getLots = async (req, res, next) => {
         id: true,
         name: true,
         currentPrice: true,
+        startPrice: true,
         endDate: true,
         images: {
           select: {
@@ -459,6 +463,118 @@ export const getLots = async (req, res, next) => {
     })
 
     res.status(200).json({ lots, count: lotsCount._count })
+  }
+  catch(error) {
+    console.log(error)
+    res.status(500).json({})
+  }
+}
+
+export const createLot = async (req, res, next) => {
+  try {
+    console.log(req.body)
+    console.log(req.files.image)
+
+    const { id: userId } = req.auth
+
+    const {
+      paymentTypes,
+      deliveryTypes,
+      dealTypes,
+      shippingPayment,
+      endDate,
+      startDate,
+      reservePrice,
+      autoConfirmOfferPrice,
+      minOfferPrice,
+      buyNowPrice,
+      betStep,
+      startPrice,
+      subcategory,
+      location,
+      description,
+      condition,
+      name,
+      allowOffers,
+      betHistory,
+      reList
+    } = req.body
+
+    const lot = await prisma.lot.create({
+      data: {
+        name: name,
+        description: description,
+        condition: condition,
+        startPrice: +startPrice,
+        betStep: +betStep || null,
+        betHistory: betHistory !== 'true',
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        buyNowPrice: +buyNowPrice || null,
+        reservePrice: +reservePrice || null,
+        relist: reList === 'true',
+        allowOffers: allowOffers === 'true',
+        minOfferPrice: +minOfferPrice || null,
+        autoConfirmOfferPrice: +autoConfirmOfferPrice || null,
+        location: location,
+        shippingPayment: shippingPayment,
+        category: {
+          connect: {
+            id: +subcategory
+          }
+        },
+        user: {
+          connect: {
+            id: +userId
+          }
+        }
+      }
+    })
+
+    await prisma.image.createMany({
+      data: req.files.image.map(item => ({
+        path: item.path.slice(7),
+        lotId: lot.id
+      }))
+    })
+
+    await prisma.paymentTypeList.createMany({
+      data: JSON.parse(paymentTypes).map(item => ({
+        lotId: lot.id,
+        paymentTypeId: +item
+      }))
+    })
+
+    await prisma.deliveryTypeList.createMany({
+      data: JSON.parse(deliveryTypes).map(item => ({
+        lotId: lot.id,
+        deliveryTypeId: +item
+      }))
+    })
+
+    await prisma.dealTypeList.createMany({
+      data: JSON.parse(dealTypes).map(item => ({
+        lotId: lot.id,
+        dealTypeId: +item
+      }))
+    })
+
+    const features = await prisma.feature.findMany({
+      where: {
+        categoryId: +subcategory
+      }
+    })
+
+    await prisma.featureValue.createMany({
+      data: features.map(item => ({
+        lotId: lot.id,
+        featureId: item.id,
+        featureOptionId: item.isOptions ? +req.body[`feature${item.id}`] : null,
+        value: item.isOptions ? null : +req.body[`feature${item.id}`],
+      }))
+    })
+
+    res.status(201).json({ message: "Лот був створений" })
   }
   catch(error) {
     console.log(error)

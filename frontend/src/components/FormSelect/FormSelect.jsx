@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { selectTheme } from '../../store/slices/themeSlice'
 import Select from 'react-select'
 
-export default function FormSelect({control, name, helperText, options, placeholder, className = ''}) {
+export default function FormSelect({control, name, helperText, options, placeholder, className = '', callback = () => {}, ...props}) {
   const theme = useSelector(selectTheme)
   const selectStyles = useSelectTheme(theme, "100%", 'auto', !!helperText)
 
@@ -20,9 +20,13 @@ export default function FormSelect({control, name, helperText, options, placehol
           placeholder={helperText || placeholder}
           isSearchable
           value={field.value}
-          onChange={e => field.onChange(e)}
+          onChange={e => {
+            field.onChange(e)
+            callback()
+          }}
           onBlur={e => field.onBlur(e)}
           options={options}
+          {...props}
         />
       }
     />

@@ -17,6 +17,7 @@ import Checkout from './pages/Checkout/Checkout'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import CreateLot from './pages/CreateLot/CreateLot'
+import UpdateLot from './pages/UpdateLot/UpdateLot'
 
 function App() {
   const dispatch = useDispatch()
@@ -60,6 +61,7 @@ function App() {
           <Routes>
             <Route exact path='/' element={<></>}/>
             <Route exact path='/user/:id' element={<User />}/>
+            <Route exact path='/lot/:id/edit' element={<UpdateLot />}/>
             <Route exact path='/lot/:id' element={<Lot />}/>
             <Route exact path='/catalog' element={<Catalog />}/>
             <Route exact path='/wins' element={<Wins />}/>

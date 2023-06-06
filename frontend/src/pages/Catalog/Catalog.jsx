@@ -479,6 +479,7 @@ export default function Catalog() {
                         name={item.name}
                         image={`${import.meta.env.VITE_SERVER_URL}/../${item.images[0]?.path}`}
                         price={item.currentPrice}
+                        startPrice={item.startPrice}
                         count={item._count.bets}
                         endDate={item.endDate}
                       />

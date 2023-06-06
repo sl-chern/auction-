@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import './TextArea.css'
 
 export default function TextArea({label, value, onChange, onBlur, errorText = null}) {
@@ -6,8 +6,6 @@ export default function TextArea({label, value, onChange, onBlur, errorText = nu
 
   if(!!errorText)
     className += ' form-input_invalid'
-
-  console.log(className)
 
   return (
     <div className="textarea">

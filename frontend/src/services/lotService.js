@@ -62,6 +62,14 @@ export const lotApi = createApi({
         body
       }),
       providesTags: result => ['Lots'],
+    }),
+    createLot: build.mutation({
+      query: (body) => ({
+        url: '/lot',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['Lots']
     })
   }),
 })

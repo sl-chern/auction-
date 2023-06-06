@@ -58,7 +58,7 @@ const offerHandler = (io, socket) => {
     catch(err) {
       io.to(lotId).emit("customError", { 
         error: err.message, 
-        event: 'createBet',
+        event: 'createOffer',
         data: offer
       })
       console.log(err)

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import getStringDate from '../../utils/getRemainingTime'
 
-export default function ShortLot({id, image, name, price, count, endDate}) {
+export default function ShortLot({id, image, name, price, startPrice, count, endDate}) {
   return (
     <Link to={`/lot/${id}`}>
       <div className='flex flex-col gap-1'>
@@ -14,7 +14,7 @@ export default function ShortLot({id, image, name, price, count, endDate}) {
         </div>
         <div className='flex flex-col gap-1'>
           <p className='default-text text-base leading-[1.1rem] font-openSans line-clamp-2'>{name}</p>
-          <p className='default-text text-xl font-oswald line-clamp-2 leading-6'>{price}₴</p>
+          <p className='default-text text-xl font-oswald line-clamp-2 leading-6'>{price || startPrice}₴</p>
           <p className='text-dark-400 dark:text-light-400 text-sm font-openSans leading-4 '>До кінця торгів: {getStringDate(endDate)}</p>
         </div>
       </div>

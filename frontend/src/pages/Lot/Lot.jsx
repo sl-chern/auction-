@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { lotApi } from '../../services/lotService'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import PageLoading from '../../components/PageLoading/PageLoading'
 import Carousel from '../../components/Carousel/Carousel'
 import getStringDate from '../../utils/getRemainingTime'
@@ -22,6 +22,8 @@ import getConvertedValue from '../../utils/getConvertedValue'
 
 export default function Lot() {
   const { id } = useParams()
+
+  const navigate = useNavigate()
 
   const socket = useSocket()
 
@@ -72,15 +74,17 @@ export default function Lot() {
         'is-decimal', 
         'Ціна не є числом', 
         value => {
-          if(/^\d*\.{0,1}\d{0,2}$/.test(value) === false)
-            return false
-          return true
+          if(/^\d*\.{0,1}\d{0,2}$/.test(value) === true || value === '' || value === undefined)
+            return true
+          return false
         }
       )
       .test(
         'is-bet', 
         'Некоректна ціна', 
         value => {
+          if(value === '' || value === undefined)
+            return true
           if(lot?.betStep) {
             if(+value <= +lot?.currentPrice + +lot?.betStep)
               return false
@@ -99,15 +103,17 @@ export default function Lot() {
         'is-decimal', 
         'Ціна не є числом', 
         value => {
-          if(/^\d*\.{0,1}\d{0,2}$/.test(value) === false)
-            return false
-          return true
+          if(/^\d*\.{0,1}\d{0,2}$/.test(value) === true || value === '' || value === undefined)
+            return true
+          return false
         }
       )
       .test(
         'is-bet', 
         'Некоректна ціна', 
         value => {
+          if(value === '' || value === undefined)
+            return true
           if(lot?.minOfferPrice) {
             if(+value <= +lot?.minOfferPrice)
               return false
@@ -166,7 +172,14 @@ export default function Lot() {
         <div className='flex flex-row gap-5 w-full h-auto'>
           <Carousel images={lot?.images.map(item => item.path)} height={"502px"}/>
           <div className='flex flex-col gap-2 grow'>
-            <p className='default-text font-oswald text-3xl'>{lot?.name}</p>
+            <div className='flex flex-row justify-between'>
+              <p className='default-text font-oswald text-3xl'>{lot?.name}</p>
+              {
+                +userId === lot?.user.id
+                  ? <Button outline={true} onClick={() => navigate(`/lot/${lot?.id}/edit`)}>Редагувати</Button>
+                  : null
+              }
+            </div>
             <div className='divider'></div>
             <div className='flex flex-row ml-10 gap-1'>
               <div className='flex flex-col items-end'>

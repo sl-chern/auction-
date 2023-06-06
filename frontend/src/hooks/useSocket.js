@@ -2,6 +2,7 @@ import { io } from 'socket.io-client'
 import { useRefresh } from '../services/authService'
 import { useSelector } from 'react-redux'
 import { selectAccessToken } from '../store/slices/authenticationSlice'
+import { toast } from 'react-toastify'
 
 const useSocket = () => {
   const refresh = useRefresh()
@@ -26,6 +27,12 @@ const useSocket = () => {
           ...data.data,
           accessToken
         })
+      }
+      if(+data.error === 403) {
+        if(data.event === 'createBet')
+          toast.error('Ви не можете створити ставку')
+        if(data.event === 'createOffer')
+          toast.error('Ви не можете створити пропозицію')
       }
     }
     catch(err) {
