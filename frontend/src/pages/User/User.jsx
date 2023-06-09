@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './User.css'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { userApi } from '../../services/userService'
 import PageLoading from '../../components/PageLoading/PageLoading'
@@ -13,7 +13,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import FormField from '../../components/FormField/FormField'
 import { HiUser } from 'react-icons/hi'
-import { MdEmail } from 'react-icons/md'
+import { MdEmail, MdRecommend, MdSell } from 'react-icons/md'
 import { AiFillPhone } from 'react-icons/ai'
 import FormTextArea from '../../components/FormTextArea/FormTextArea'
 import { GoPencil } from 'react-icons/go'
@@ -22,9 +22,13 @@ import { lotApi } from '../../services/lotService'
 import { changeAllCurrentLots, changeAllCurrentLotsSkip, selectAllCurrentLots, selectAllCurrentLotsSkip } from '../../store/slices/userLotsSlice'
 import LotList from '../../components/LotList/LotList'
 import OrderContent from './OrderContent'
+import CreateReview from './CreateReview'
+import ReviewContent from './ReviewContent'
 
 export default function User() {
   const { id } = useParams()
+
+  const navigate = useNavigate()
 
   const { data: user, isLoading } = userApi.useFetchUserQuery(id)
   const userId = useSelector(selectUserId)
@@ -103,6 +107,8 @@ export default function User() {
   const lots = useSelector(selectAllCurrentLots)
   const lotsSkip = useSelector(selectAllCurrentLotsSkip)
 
+  const [visibility, setVisibility] = useState(false)
+
   return (
     <PageLoading loading={isLoading}>
       <section className='user-page'>
@@ -147,7 +153,22 @@ export default function User() {
                 : <p className='default-text user-page__user-full-name'>{user?.firstName} {user?.lastName}</p>
             }
             <div className='user-page__stats'>
-              <div></div>
+              <div className='flex flex-row gap-12 items-center'>
+                <div className='flex flex-row items-center gap-1 h-min'>
+                  <MdSell className='default-icon' size={22}/>
+                  <p className='default-text text-lg font-roboto'>{user?.amountOrders} лотів продано</p>
+                </div>
+                <div className='flex flex-row items-center gap-1 h-min'>
+                  { 
+                    user?.reviewsAmount > 0
+                      ? <>
+                          <MdRecommend className='default-icon' size={22}/>
+                          <p className='default-text text-lg font-roboto'>{`${(user?.positiveReviewAmount/user?.reviewsAmount).toFixed(2) * 100}% позитивних відгуків`}</p>
+                        </>
+                      : <p className='default-text text-lg font-roboto'>Відгуків немає</p>
+                  }
+                </div>
+              </div>
               {
                 userId === user?.id
                   ? isEdit 
@@ -155,8 +176,15 @@ export default function User() {
                         <Button type="button" onClick={() => handleCancel()}>Відмінити</Button>
                         <Button outline={true} onClick={handleUpdate}>Змінити</Button>
                       </div>
-                    : <Button type="button" onClick={() => onClick()}>Редагувати</Button>
-                  : null
+                    : <div className='flex flex-row gap-2'>
+                        <div className='create-button'>
+                          <Button type="button" onClick={() => navigate('/create')}>Створити лот</Button>
+                        </div>
+                        <Button type="button" onClick={() => onClick()}>Редагувати</Button>
+                      </div>
+                  : <div className='create-button'>
+                      <Button type="button" onClick={() => setVisibility(true)}>Зробити відгук</Button>
+                    </div>
               }
             </div>
           </div>
@@ -180,6 +208,10 @@ export default function User() {
                     </Tab>
                   : null
               }
+              <Tab className='default-text user-page__tab' selectedClassName='user-page__tab_selected'>
+                <p>Відгуки</p>
+                <div/>
+              </Tab>
             </TabList>
 
             <TabPanel className='user-page__tab-panel'>
@@ -269,9 +301,13 @@ export default function User() {
                 </TabPanel>
               : null
             }
+            <TabPanel className='user-page__tab-panel'>
+              <ReviewContent />
+            </TabPanel>
           </Tabs>
         </div>
       </section>
+      <CreateReview visibility={visibility} setVisibility={setVisibility}/>
     </PageLoading>
   )
 }

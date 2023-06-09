@@ -3,7 +3,7 @@ import {expressjwt as jwt} from "express-jwt"
 import config from "config"
 import multer from "multer"
 import { v4 as uuid } from "uuid"
-import { getBets, getCategories, getSubcategoryFilters, getLot, getOffers, getLotFilters, getLots, createLot, updateLot, getAllLots, getAllAmounts, getAllUserCurrentLots, getAllUserCurrentLotsAmount } from "../controllers/lot.controller.js"
+import { getBets, getCategories, getSubcategoryFilters, getLot, getOffers, getLotFilters, getLots, createLot, updateLot, getAllLots, getAllAmounts, getAllUserCurrentLots, getAllUserCurrentLotsAmount, getLotsBuyedFromUser } from "../controllers/lot.controller.js"
 import userPermission from "../middlewares/userPermission.middleware.js"
 
 const storage = multer.diskStorage(
@@ -39,5 +39,7 @@ router.route("/:id")
 
 router.get("/:id/bets", getBets)
 router.get("/:id/offers", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), getOffers)
+
+router.get('/lotstoreview/:id', jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), getLotsBuyedFromUser)
 
 export default router

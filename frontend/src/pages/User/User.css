@@ -76,4 +76,8 @@
     .lot-content .react-tabs__tab--selected p {
         @apply dark:!text-dark-200 !text-light-300
     }
+
+    .create-button .button {
+        @apply w-max
+    }
 }

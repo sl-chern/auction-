@@ -2,10 +2,14 @@
 
 @layer components {
     main {
-        @apply max-w-7xl grow mx-auto w-screen flex relative
+        @apply max-w-7xl grow mx-auto w-screen flex relative z-40
     }
     
     .Toastify__toast-theme--dark {
         @apply bg-dark-100
+    }
+
+    .modal-review .form-group__form-label {
+        @apply dark:!bg-dark-200 bg-light-200
     }
 }

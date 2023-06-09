@@ -7,11 +7,11 @@ export default function Button({outline, onClick, children, loading, type="submi
 
   useEffect(() => {
     if(!outline) {
-      setTextStyle("text")
+      setTextStyle("button-text")
       setButStyle("button group")
     }
     else {
-      setTextStyle("text-outline")
+      setTextStyle("button-text-outline")
       setButStyle("button-outline group")
     }
   }, [outline])

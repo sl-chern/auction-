@@ -4,7 +4,7 @@ import baseQuery from './customBaseQuery'
 export const lotApi = createApi({ 
   reducerPath: 'lotAPI',
   baseQuery: baseQuery,
-  tagTypes: ['Lot', 'Bets', 'Offers', 'Categories', 'Subcategories', 'Features', 'Lots', 'UserLotsAmounts', 'AllLots', 'FutureLots', 'OrderedLots', 'SoldLots', 'ActiveLots', 'ActiveAuctions', 'Buyed', 'Ordered', 'AllCurrentLots', 'AllCurrentLotsAmount'],
+  tagTypes: ['Lot', 'Bets', 'Offers', 'Categories', 'Subcategories', 'Features', 'Lots', 'UserLotsAmounts', 'AllLots', 'FutureLots', 'OrderedLots', 'SoldLots', 'ActiveLots', 'ActiveAuctions', 'Buyed', 'Ordered', 'AllCurrentLots', 'AllCurrentLotsAmount', 'LotsToReview'],
   endpoints: (build) => ({
     fetchLot: build.query({
       query: (id) => ({
@@ -165,5 +165,11 @@ export const lotApi = createApi({
       }),
       providesTags: result => ['AllCurrentLotsAmount'],
     }),
+    getLotsToReview: build.query({
+      query: (id) => ({
+        url: `/lot/lotstoreview/${id}`,
+      }),
+      providesTags: result => ['LotsToReview'],
+    })
   }),
 })

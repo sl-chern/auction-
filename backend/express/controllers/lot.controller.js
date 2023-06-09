@@ -1067,3 +1067,44 @@ export const getAllUserCurrentLots = async (req, res, next) => {
     res.status(500).json({})
   }
 }
+
+export const getLotsBuyedFromUser = async (req, res, next) => {
+  try {
+    const { id: sellerId } = req.params
+    const { id: buyerId } = req.auth
+
+    const lots = await prisma.lot.findMany({
+      where: {
+        userId: +sellerId,
+        orders: {
+          some: {
+            userId: +buyerId,
+          }
+        },
+        reviews: {
+          none: {
+            sellerId: +sellerId,
+            buyerId: +buyerId,
+          }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        currentPrice: true,
+        images: {
+          select: {
+            path: true,
+          },
+          take: 1
+        }
+      }
+    })
+
+    res.status(200).json(lots)
+  }
+  catch(error) {
+    console.log(error)
+    res.status(500).json({})
+  }
+}

@@ -199,9 +199,41 @@ export const getUser = async (req, res) => {
         email: true,
         login: true,
         role: true,
-        about: true
+        about: true,
       }
     })
+
+    let ordersAmount = await prisma.lot.aggregate({
+      where: {
+        AND: [
+          { userId: user.id },
+          { orders: { some: {}}}
+        ]
+      },
+      _count: true
+    })
+
+    let reviewsAmount = await prisma.review.aggregate({
+      where: {
+        sellerId: user.id
+      },
+      _count: true
+    })
+
+    let positiveReviewAmount = await prisma.review.aggregate({
+      where: {
+        sellerId: user.id,
+        recomendation: true
+      },
+      _count: true
+    })
+
+    console.log(reviewsAmount, positiveReviewAmount)
+
+    
+    user.amountOrders = ordersAmount._count
+    user.positiveReviewAmount = positiveReviewAmount._count
+    user.reviewsAmount = reviewsAmount._count
 
     user.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/${user.image}`
 
@@ -244,6 +276,73 @@ export const patchUser = async (req, res) => {
     })
 
     res.status(200).json({ message: "Інформація оновлена"})
+  }
+  catch(err) {
+    console.log(err)
+    res.status(500).json({})
+  }
+}
+
+export const createReview = async (req, res) => {
+  try {
+    const { id: buyerId } = req.auth
+    const { id: sellerId, text, recomendation, lotId } = req.body
+
+    await prisma.review.create({
+      data: {
+        recomendation: recomendation,
+        sellerId: sellerId,
+        buyerId: buyerId,
+        text: text,
+        lotId: +lotId
+      }
+    })
+
+    res.status(200).json({ message: "Відгук створений"})
+  }
+  catch(err) {
+    console.log(err)
+    res.status(500).json({})
+  }
+}
+
+export const getReviews = async (req, res) => {
+  try {
+    const { id: sellerId } = req.params
+    const { desc, sort } = req.body
+
+    const order = {}
+
+    switch(sort?.value) {
+      case 'date': 
+        order.createdDate = desc ? 'desc' : 'asc'
+        break 
+      case 'recomendation': 
+        order.recomendation = desc ? 'desc' : 'asc'
+        break
+    }
+
+    const reviews = await prisma.review.findMany({
+      where: {
+        sellerId: +sellerId
+      },
+      select: {
+        text: true,
+        recomendation: true,
+        createdDate: true,
+        buyer: {
+          select: {
+            firstName: true,
+            lastName: true,
+            image: true,
+            id: true
+          }
+        }
+      },
+      orderBy: order
+    })
+
+    res.status(200).json(reviews)
   }
   catch(err) {
     console.log(err)

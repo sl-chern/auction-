@@ -19,6 +19,22 @@ export const userApi = createApi({
         body: body
       }),
       invalidatesTags: ['User']
-    })
+    }),
+    getReviews: build.query({
+      query: ({id, body}) => ({
+        url: `/user/${id}/reviews`,
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['Reviews']
+    }),
+    createReview: build.mutation({
+      query: (body) => ({
+        url: `/user/review`,
+        method: 'POST',
+        body: body
+      }),
+      invalidatesTags: ['Reviews']
+    }),
   })
 })

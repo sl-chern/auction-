@@ -13,12 +13,12 @@
         hover:cursor-pointer transition-colors ease-linear select-none
     }
 
-    .button p.text {
+    .button-text {
         @apply font-oswald font-normal text-xl text-dark-200 dark:text-light-200
         group-hover:text-light-200 dark:group-hover:text-dark-200
     }
 
-    .text-outline {
+    .button-text-outline {
         @apply font-oswald font-normal text-xl text-light-200 dark:text-dark-200
     }
 
