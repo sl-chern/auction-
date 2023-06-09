@@ -9,7 +9,7 @@ import FormField from '../../components/FormField/FormField'
 import FormTextArea from '../../components/FormTextArea/FormTextArea'
 import FormSelect from '../../components/FormSelect/FormSelect'
 import Button from '../../components/Button/Button'
-import Image from '../CreateLot/Image'
+import Image from './Image'
 import { conditionOptions } from '../../data/catalogOptions'
 import { lotApi } from '../../services/lotService'
 import { transliterate } from 'transliteration'
@@ -25,6 +25,7 @@ import { shippingPaymentOptions } from '../../data/lotOptions'
 import { getSchema } from '../CreateLot/schema'
 import PageLoading from '../../components/PageLoading/PageLoading'
 import { parseDateTime } from '@internationalized/date'
+import { toast } from 'react-toastify'
 
 export default function UpdateLot() {
   const navigate = useNavigate()
@@ -38,6 +39,8 @@ export default function UpdateLot() {
   
   const [drag, setDrag] = useState(false)
   const [lotImages, setLotImages] = useState([]) 
+  const [storedImages, setStoredImages] = useState([])
+  const [deletedImage, setDeletedImage] = useState([])
   const [imageError, setImageError] = useState(true)
   const [firstSubmited, setFirstSubmited] = useState(false)
 
@@ -46,11 +49,11 @@ export default function UpdateLot() {
   const [featuresFirstLoaded, setFeaturesFirstLoaded] = useState(false)
   
   useEffect(() => {
-    if(lotImages.length > 0)
+    if(lotImages.length > 0 || storedImages.length > 0)
       setImageError(false)
     else
       setImageError(true)
-  }, [lotImages])
+  }, [lotImages, storedImages])
 
   const validationSchema = getSchema()
 
@@ -75,10 +78,12 @@ export default function UpdateLot() {
   const { data: categories } = lotApi.useFetchCategoriesQuery()
   const [ categoryTrigger, { data: subcategories, isLoading: subcategoriesLoading }] = lotApi.useLazyFetchSubcategoriesQuery()
   const [ subcategoryTrigger, { data: features, isLoading: featuresLoading }] = lotApi.useLazyFetchFiltersQuery()
-  const [ createLot, { isLoading: creatingLotLoading, error: creatingLotError } ] = lotApi.useCreateLotMutation()
+  const [ updateLot, { data: updatingLotData, isLoading: updatingLotLoading, error: updatingLotError } ] = lotApi.useUpdateLotMutation()
 
   useEffect(() => {
     if(!!lot) {
+      new Date(lot?.startDate) < new Date() 
+        navigate(`/lot/${lotId}`)
       setValue('name', lot?.name)
       setValue('description', lot?.description)
       setValue('condition', conditionOptions.find(item => item.value === lot?.condition))
@@ -95,6 +100,7 @@ export default function UpdateLot() {
       setValue('reservePrice', lot?.reservePrice || undefined)
       setValue('shippingPayment', shippingPaymentOptions.find(item => item.value === lot?.shippingPayment))
       setValue('location', lot?.location)
+      setStoredImages(lot?.images)
     }
   }, [lot])
   
@@ -236,13 +242,17 @@ export default function UpdateLot() {
     body.append('allowOffers', allowOffers)
     body.append('betHistory', betHistory)
     body.append('reList', reList)
+    body.append('deletedImages', JSON.stringify(deletedImage))
 
-    await createLot(body)
-
-    if(!creatingLotError) {
-      //navigate('/') 
-    }
+    await updateLot({id: lotId, body})
   }
+
+  useEffect(() => {
+    if(!updatingLotError && !!updatingLotData) {
+      toast.success('Інформація про лот була оновлена')
+      navigate(`/lot/${lot.id}`)
+    }
+  }, [updatingLotData, updatingLotError])
 
   const handleStartDrag = e => {
     e.preventDefault()
@@ -320,6 +330,21 @@ export default function UpdateLot() {
               </label>
             </div>
             <div className='w-full flex flex-row flex-wrap gap-2 h-min'>
+              {
+                storedImages.map((item, index) => 
+                  <Image 
+                    key={`storedimag${index}`}
+                    index={index}
+                    image={`${import.meta.env.VITE_SERVER_URL}/../${item.path}`}
+                    callback={() => {
+                      const newImageArray = [...storedImages]
+                      newImageArray.splice(index, 1)
+                      setStoredImages(newImageArray)
+                      setDeletedImage([...deletedImage, item.id])
+                    }}
+                  />
+                )
+              }
               {
                 lotImages.map((item, index) => 
                   <Image 
@@ -604,7 +629,7 @@ export default function UpdateLot() {
           </div>
 
           <div className='w-[200px] mx-auto'>
-            <Button type='submit' outline={true} loading={creatingLotLoading}>Редагувати</Button>
+            <Button type='submit' outline={true} loading={updatingLotLoading}>Редагувати</Button>
           </div>
         </form>
       </section>

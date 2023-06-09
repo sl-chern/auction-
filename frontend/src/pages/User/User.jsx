@@ -17,6 +17,11 @@ import { MdEmail } from 'react-icons/md'
 import { AiFillPhone } from 'react-icons/ai'
 import FormTextArea from '../../components/FormTextArea/FormTextArea'
 import { GoPencil } from 'react-icons/go'
+import LotContent from './LotContent'
+import { lotApi } from '../../services/lotService'
+import { changeAllCurrentLots, changeAllCurrentLotsSkip, selectAllCurrentLots, selectAllCurrentLotsSkip } from '../../store/slices/userLotsSlice'
+import LotList from '../../components/LotList/LotList'
+import OrderContent from './OrderContent'
 
 export default function User() {
   const { id } = useParams()
@@ -92,6 +97,12 @@ export default function User() {
 
   const { errors } = useFormState({control})
 
+  const { data: amount, isLoading: amountsLoading } = lotApi.useGetUsersAllCurrentLotsAmountQuery()
+
+  const [ lotsTrigger, { isLoading: lotsLoading }] = lotApi.useLazyGetUsersAllCurrentLotsQuery()
+  const lots = useSelector(selectAllCurrentLots)
+  const lotsSkip = useSelector(selectAllCurrentLotsSkip)
+
   return (
     <PageLoading loading={isLoading}>
       <section className='user-page'>
@@ -161,6 +172,14 @@ export default function User() {
                 <p>Лоти</p>
                 <div/>
               </Tab>
+              {
+                userId === +id
+                  ? <Tab className='default-text user-page__tab' selectedClassName='user-page__tab_selected'>
+                      <p>Замовлення</p>
+                      <div/>
+                    </Tab>
+                  : null
+              }
             </TabList>
 
             <TabPanel className='user-page__tab-panel'>
@@ -201,18 +220,7 @@ export default function User() {
                       <MdEmail className='default-icon' size={18}/>
                       <p className='text-lg font-oswald text-dark-400 dark:text-light-400'>Email</p>
                     </div>
-                    {
-                      isEdit 
-                        ? <div className="flex flex-row w-[300px] mt-4">
-                            <FormField
-                              control={control}
-                              name="email"
-                              label="Email"
-                              helperText={errors.email?.message}
-                            />
-                          </div>
-                        : <p className='default-text font-roboto text-xl'>{user?.email}</p>
-                    }
+                    <p className='default-text font-roboto text-xl'>{user?.email}</p>
                   </div>
                   
                   <div className='flex flex-col'>
@@ -237,8 +245,30 @@ export default function User() {
               </div>
             </TabPanel>
             <TabPanel className='user-page__tab-panel'>
-              <p>ne panel</p>
+              {
+                userId === +id 
+                  ? <LotContent />
+                  : <PageLoading loading={amountsLoading}>
+                      <LotList 
+                        lots={lots}
+                        skip={lotsSkip}
+                        setLots={changeAllCurrentLots}
+                        setSkip={changeAllCurrentLotsSkip}
+                        isLoading={lotsLoading}
+                        trigger={(body) => lotsTrigger({id, body})}
+                        count={amount?.amount}
+                        label={'Усі лоти'}
+                      />
+                    </PageLoading>
+              }
             </TabPanel>
+            {
+              userId === +id
+              ? <TabPanel className='user-page__tab-panel'>
+                  <OrderContent />
+                </TabPanel>
+              : null
+            }
           </Tabs>
         </div>
       </section>

@@ -273,3 +273,167 @@ export const createOrder = async (req, res, next) => {
     res.status(500).json({})
   }
 }
+
+export const getOrders = async (req, res, next) => {
+  try {
+    const { id: userId } = req.auth
+    const { flag } = req.params
+    const { skip, take, sort, desc, statuses } = req.body
+
+    const where = {}
+
+    switch(flag) {
+      case 'bought': 
+        where.userId = +userId
+        break
+      case 'sold':
+        where.lot = {
+          userId: +userId
+        }
+        break
+    }
+
+    if(!!statuses && statuses.length > 0)
+      where.orderStatus = {
+        in: statuses
+      }
+
+    const order = {}
+
+    switch(sort?.value) {
+      case 'price': 
+        order.currentPrice = desc ? 'desc' : 'asc'
+        break 
+      case 'date': 
+        order.createdData = desc ? 'desc' : 'asc'
+        break
+    }
+
+    const orders = await prisma.order.findMany({
+      where,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        createdDate: true,
+        phone: true,
+        orderStatus: true,
+        price: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            image: true
+          }
+        },
+        dealType: {
+          select: {
+            name: true
+          }
+        },
+        paymentType: {
+          select: {
+            name: true
+          }
+        },
+        delivery: {
+          select: {
+            city: true,
+            address: true,
+            deliveryType: {
+              select: {
+                name: true,
+              }
+            }
+          }
+        },
+        lot: {
+          select: {
+            id: true,
+            name: true,
+            currentPrice: true,
+            images: {
+              select: {
+                path: true
+              },
+              take: 1
+            },
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                image: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: order,
+      take,
+      skip
+    })
+
+    res.status(200).json(orders)
+  }
+  catch(error) {
+    console.log(error)
+    res.status(500).json({})
+  }
+}
+
+export const getOrdersAmount = async (req, res, next) => {
+  try {
+    const { id: userId } = req.auth
+
+    const boughtOrders = await prisma.order.aggregate({
+      where: {
+        userId: +userId
+      },
+      _count: true
+    })
+
+    const soldOrders = await prisma.order.aggregate({
+      where: {
+        lot: {
+          userId: +userId
+        }
+      },
+      _count: true
+    })
+
+    res.status(200).json({
+      boughtAmount: boughtOrders._count,
+      soldAmount: soldOrders._count
+    })
+  }
+  catch(error) {
+    console.log(error)
+    res.status(500).json({})
+  }
+}
+
+export const changeOrderStatus = async (req, res, next) => {
+  try {
+    const { id: orderId } = req.auth
+    const { status } = req.body
+
+    console.log(status, orderId);
+
+    await prisma.order.update({
+      where: {
+        id: +orderId
+      },
+      data: {
+        orderStatus: status
+      }
+    })
+
+    res.status(200).json({ message: 'Статус був успішно оновлений' })
+  }
+  catch(error) {
+    console.log(error)
+    res.status(500).json({})
+  }
+}

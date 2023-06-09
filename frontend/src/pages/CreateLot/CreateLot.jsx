@@ -23,6 +23,7 @@ import Checkbox from '../../components/Checkbox/Checkbox'
 import FormDateField from '../../components/FormDateField/FormDateField'
 import { shippingPaymentOptions } from '../../data/lotOptions'
 import { getSchema } from './schema'
+import { toast } from 'react-toastify'
 
 export default function CreateLot() {
   const navigate = useNavigate()
@@ -165,8 +166,10 @@ export default function CreateLot() {
   }
 
   useEffect(() => {
-    if(!creatingLotError && !!creatingLotData)
+    if(!creatingLotError && !!creatingLotData) {
+      toast.success('Лот був успішно створений')
       navigate(`/user/${userId}`)
+    }
   }, [creatingLotData, creatingLotError])
 
   const handleStartDrag = e => {

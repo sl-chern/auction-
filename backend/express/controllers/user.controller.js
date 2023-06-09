@@ -231,7 +231,7 @@ export const patchUser = async (req, res) => {
         if(err)
           console.error(err.message)
         return
-    })
+      })
 
     await prisma.user.update({
       where: {

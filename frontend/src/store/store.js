@@ -4,6 +4,8 @@ import storage from 'redux-persist/lib/storage'
 import authenticationSlice from './slices/authenticationSlice'
 import themeSlice from './slices/themeSlice'
 import userSlice from './slices/userSlice'
+import userLotsSlice from './slices/userLotsSlice'
+import userOrdersSlice from './slices/userOrderSlice'
 import { userApi } from '../services/userService'
 import { lotApi } from '../services/lotService'
 import { orderApi } from '../services/orderService'
@@ -11,13 +13,15 @@ import { orderApi } from '../services/orderService'
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['userAPI', 'lotAPI', 'betAPI', 'orderAPI']
+  blacklist: ['userLotsSlice', 'userOrdersSlice', 'userAPI', 'lotAPI', 'betAPI', 'orderAPI']
 }
 
 const rootReducer = combineReducers({
   authenticationSlice,
   themeSlice,
   userSlice,
+  userLotsSlice,
+  userOrdersSlice,
   [userApi.reducerPath]: userApi.reducer,
   [lotApi.reducerPath]: lotApi.reducer,
   [orderApi.reducerPath]: orderApi.reducer

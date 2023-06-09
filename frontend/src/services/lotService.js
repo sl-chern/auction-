@@ -4,7 +4,7 @@ import baseQuery from './customBaseQuery'
 export const lotApi = createApi({ 
   reducerPath: 'lotAPI',
   baseQuery: baseQuery,
-  tagTypes: ['Lot', 'Bets', 'Offers', 'Categories', 'Subcategories', 'Features', 'Lots'],
+  tagTypes: ['Lot', 'Bets', 'Offers', 'Categories', 'Subcategories', 'Features', 'Lots', 'UserLotsAmounts', 'AllLots', 'FutureLots', 'OrderedLots', 'SoldLots', 'ActiveLots', 'ActiveAuctions', 'Buyed', 'Ordered', 'AllCurrentLots', 'AllCurrentLotsAmount'],
   endpoints: (build) => ({
     fetchLot: build.query({
       query: (id) => ({
@@ -69,7 +69,101 @@ export const lotApi = createApi({
         method: 'POST',
         body
       }),
-      invalidatesTags: ['Lots']
-    })
+      invalidatesTags: ['Lots', 'UserLotsAmounts']
+    }),
+    updateLot: build.mutation({
+      query: ({id, body}) => ({
+        url: `/lot/${id}`,
+        method: 'PUT',
+        body
+      }),
+      invalidatesTags: ['Lots', 'Lot']
+    }),
+    getAllAmounts: build.query({
+      query: () => ({
+        url: '/lot/amounts'
+      }),
+      providesTags: result => ['UserLotsAmounts'],
+    }),
+    getUsersAllLots: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/alllots',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['AllLots'],
+    }),
+    getUsersFutureLots: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/futurelots',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['FutureLots'],
+    }),
+    getUsersActiveLots: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/activelots',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['ActiveLots'],
+    }),
+    getUsersSoldLots: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/soldlots',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['SoldLots'],
+    }),
+    getUsersOrderedLots: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/orderedlots',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['OrderedLots'],
+    }),
+    getUsersActiveAuctions: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/activeauctions',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['ActiveAuctions'],
+    }),
+    getUsersBuyed: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/buyed',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['Buyed'],
+    }),
+    getUsersOrdered: build.query({
+      query: (body) => ({
+        url: '/lot/alllots/ordered',
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['Ordered'],
+    }),
+    getUsersAllCurrentLots: build.query({
+      query: ({id, body}) => ({
+        url: `/lot/user/${id}`,
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['AllCurrentLots'],
+    }),
+    getUsersAllCurrentLotsAmount: build.query({
+      query: ({id, body}) => ({
+        url: `/lot/user/${id}/amount`,
+        method: 'POST',
+        body
+      }),
+      providesTags: result => ['AllCurrentLotsAmount'],
+    }),
   }),
 })

@@ -82,7 +82,9 @@ const textByNumber = (number, type) => {
     const now = new Date(Date.now())
   
     let diff = (crD.getTime() - now.getTime()) / (1000 * 60)
-  
+    
+    if(diff < 0)
+      return 'торги закінчились'
     if(diff < 1)
       return `менше хвилини`
     else if(diff < 60)

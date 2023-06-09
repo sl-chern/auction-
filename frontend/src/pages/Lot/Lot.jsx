@@ -19,6 +19,7 @@ import { selectUserId } from '../../store/slices/userSlice'
 import OfferSeller from './OfferSeller'
 import OfferBidder from './OfferBidder'
 import getConvertedValue from '../../utils/getConvertedValue'
+import { toast } from 'react-toastify'
 
 export default function Lot() {
   const { id } = useParams()
@@ -176,7 +177,16 @@ export default function Lot() {
               <p className='default-text font-oswald text-3xl'>{lot?.name}</p>
               {
                 +userId === lot?.user.id
-                  ? <Button outline={true} onClick={() => navigate(`/lot/${lot?.id}/edit`)}>Редагувати</Button>
+                  ? <Button
+                      outline={true} 
+                      onClick={() => {
+                        new Date(lot?.startDate) < new Date() 
+                          ? toast.error('Ви не можетe оновити дані про лот, якщо торги вже розпочались') 
+                          : navigate(`/lot/${lot?.id}/edit`)
+                      }}
+                    >
+                      Редагувати
+                    </Button>
                   : null
               }
             </div>
@@ -333,25 +343,27 @@ export default function Lot() {
               }
             </div>
           </TabPanel>
-          <TabPanel className='user-page__tab-panel'>
+          <TabPanel className='user-page__tab-panel mt-1 flex flex-col gap-2'>
             {
               lot?.betHistory
-                ? <div className='grid grid-cols-[400px_200px_200px] gap-2 mt-3'>
-                    <p className='default-text font-openSans text-lg'>Повне імя</p>
-                    <p className='default-text font-openSans text-lg'>Ставка</p>
-                    <p className='default-text font-openSans text-lg'>Дата</p>
-                    {
-                      bets?.bets.map((item, index) => 
-                        <React.Fragment key={`bet${index}`}>
-                          <Link to={`/user/${item.user.id}`} className='hover:cursor-pointer'>
-                            <p className='default-text font-openSans text-lg'>{item.user.firstName} {item.user.lastName}</p>
-                          </Link>
-                          <p className='default-text font-openSans text-lg'>{item.price}₴</p>
-                          <p className='default-text font-openSans text-lg'>{getFormatedDate(item.date)}</p>
-                        </React.Fragment>
-                      )
-                    }
-                  </div>
+                ? bets?.bets.length > 0
+                  ? <div className='grid grid-cols-[400px_200px_200px] gap-2 mt-3'>
+                      <p className='default-text font-openSans text-lg'>Повне імя</p>
+                      <p className='default-text font-openSans text-lg'>Ставка</p>
+                      <p className='default-text font-openSans text-lg'>Дата</p>
+                      {
+                        bets?.bets.map((item, index) => 
+                          <React.Fragment key={`bet${index}`}>
+                            <Link to={`/user/${item.user.id}`} className='hover:cursor-pointer'>
+                              <p className='default-text font-openSans text-lg'>{item.user.firstName} {item.user.lastName}</p>
+                            </Link>
+                            <p className='default-text font-openSans text-lg'>{item.price}₴</p>
+                            <p className='default-text font-openSans text-lg'>{getFormatedDate(item.date)}</p>
+                          </React.Fragment>
+                        )
+                      }
+                    </div>
+                  : <p className='default-text font-openSans text-lg self-center'>Ставок поки що немає</p>
                 : <p className='default-text font-openSans text-lg self-center'>Історія ставок недоступна</p>
             }
           </TabPanel>

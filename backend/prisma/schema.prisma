@@ -240,6 +240,7 @@ model Order {
   phone                     String                @unique @db.VarChar(13)
   firstName                 String
   lastName                  String
+  createdDate               DateTime              @default(now())
   orderStatus               OrderStatus
   userId                    Int
   user                      User                  @relation(fields: [userId], references: [id])
